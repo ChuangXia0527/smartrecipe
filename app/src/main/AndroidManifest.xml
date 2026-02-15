@@ -2,15 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- 相机权限 -->
     <uses-permission android:name="android.permission.CAMERA" />
-
-    <!-- 语音识别录音权限 -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-
-    <!-- （可选）相册读取：Android 13+ -->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-    <!-- （可选）Android 12及以下读取相册 -->
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
@@ -24,8 +18,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Smartrecipe"
-        tools:targetApi="31"
-        tools:replace="android:theme,android:label">
+        tools:replace="android:theme,android:label"
+        tools:targetApi="31">
+
+        <activity android:name=".ui.user.HistoryActivity" />
+        <activity android:name=".ui.user.FavoritesActivity" />
+        <activity android:name=".ui.user.UserPreferenceActivity" />
+        <activity android:name=".ui.auth.AuthActivity" />
+        <activity android:name=".ui.voice.VoiceActivity" />
+        <activity android:name=".ui.detail.RecipeDetailActivity" />
+        <activity android:name=".ui.recognize.RecognizeResultActivity" />
+        <activity android:name=".ui.recognize.RecognizeActivity" />
 
         <activity
             android:name=".MainActivity"
@@ -35,18 +38,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <!-- 拍照识别页 -->
-        <activity android:name=".ui.recognize.RecognizeActivity" />
-
-        <!-- 拍照识别结果/勾选页 -->
-        <activity android:name=".ui.recognize.RecognizeResultActivity" />
-
-        <!-- 详情页 -->
-        <activity android:name=".ui.detail.RecipeDetailActivity" />
-
-        <!-- 语音页（如果你还保留） -->
-        <activity android:name=".ui.voice.VoiceActivity" />
 
     </application>
 
