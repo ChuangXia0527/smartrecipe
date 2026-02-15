@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">智能食谱推荐</string>
+    <string name="btn_recognize">拍照识别</string>
+    <string name="btn_voice">语音输入</string>
+</resources>

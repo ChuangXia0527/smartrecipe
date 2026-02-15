@@ -1,0 +1,78 @@
+plugins {
+    alias(libs.plugins.androidApplication)
+}
+
+android {
+    namespace 'com.example.smartrecipe'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.example.smartrecipe"
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    // 推荐开启，写界面更舒服（你后面做列表/详情会很省事）
+    buildFeatures {
+        viewBinding true
+    }
+    aaptOptions {
+        noCompress "tflite"
+    }
+}
+
+dependencies {
+    // 你模板里已有的
+    implementation libs.appcompat
+    implementation libs.material
+    implementation libs.activity
+    implementation libs.constraintlayout
+    implementation "org.tensorflow:tensorflow-lite:2.14.0"
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.cardview:cardview:1.0.0'  // 确保 CardView 依赖已添加
+    implementation 'androidx.appcompat:appcompat:1.3.1'  // 确保 appcompat 依赖已添加
+    // ========== UI 列表 ==========
+    implementation "androidx.recyclerview:recyclerview:1.3.2"
+
+    // ========== JSON ==========
+    implementation "com.google.code.gson:gson:2.11.0"
+
+    // ========== Room (SQLite) ==========
+    implementation "androidx.room:room-runtime:2.6.1"
+    annotationProcessor "androidx.room:room-compiler:2.6.1"
+    // 可选：Room 对 Lifecycle 的友好支持（用不用都行）
+    implementation "androidx.room:room-common:2.6.1"
+
+    // ========== Lifecycle (可选但推荐) ==========
+    implementation "androidx.lifecycle:lifecycle-livedata:2.7.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel:2.7.0"
+
+    // ========== CameraX ==========
+    implementation "androidx.camera:camera-core:1.3.2"
+    implementation "androidx.camera:camera-camera2:1.3.2"
+    implementation "androidx.camera:camera-lifecycle:1.3.2"
+    implementation "androidx.camera:camera-view:1.3.2"
+
+    // ========== ML Kit 图像识别（图像标签）==========
+    implementation "com.google.mlkit:image-labeling:17.0.8"
+
+    testImplementation libs.junit
+    androidTestImplementation libs.ext.junit
+    androidTestImplementation libs.espresso.core
+}
