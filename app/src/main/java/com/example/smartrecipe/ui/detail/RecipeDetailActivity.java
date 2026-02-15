@@ -1,19 +1,26 @@
 package com.example.smartrecipe.ui.detail;
 
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.smartrecipe.R;
 import com.example.smartrecipe.data.entity.Recipe;
 import com.example.smartrecipe.data.repository.RecipeRepository;
+import com.example.smartrecipe.data.session.SessionManager;
+import com.example.smartrecipe.data.user.UserRepository;
 
 import java.util.List;
 
 public class RecipeDetailActivity extends AppCompatActivity {
 
     private TextView tvTitle, tvMeta, tvTags, tvIngredients, tvSteps;
+    private Button btnFavorite;
+    private Recipe recipe;
+    private long userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,20 +32,47 @@ public class RecipeDetailActivity extends AppCompatActivity {
         tvTags = findViewById(R.id.tvTags);
         tvIngredients = findViewById(R.id.tvIngredients);
         tvSteps = findViewById(R.id.tvSteps);
+        btnFavorite = findViewById(R.id.btnFavoriteToggle);
+
+        userId = SessionManager.currentUserId(this);
 
         int id = getIntent().getIntExtra("recipe_id", -1);
-        Recipe r = RecipeRepository.findById(this, id);
+        recipe = RecipeRepository.findById(this, id);
 
-        if (r == null) {
+        if (recipe == null) {
             tvTitle.setText("未找到食谱");
             return;
         }
 
-        tvTitle.setText(r.getName());
-        tvMeta.setText(r.getMinutes() + "分钟 · " + r.getCalorie() + "kcal");
-        tvTags.setText("标签：" + joinWithSlash(r.getTags()));
-        tvIngredients.setText(joinWithComma(r.getIngredients()));
-        tvSteps.setText(formatSteps(r.getSteps()));
+        UserRepository.trackRecipeOpen(this, userId, recipe.getId());
+
+        tvTitle.setText(recipe.getName());
+        tvMeta.setText(recipe.getMinutes() + "分钟 · " + recipe.getCalorie() + "kcal");
+        tvTags.setText("标签：" + joinWithSlash(recipe.getTags()));
+        tvIngredients.setText(joinWithComma(recipe.getIngredients()));
+        tvSteps.setText(formatSteps(recipe.getSteps()));
+
+        refreshFavoriteState();
+        btnFavorite.setOnClickListener(v -> toggleFavorite());
+    }
+
+    private void toggleFavorite() {
+        if (userId <= 0 || recipe == null) return;
+        boolean favorited = UserRepository.isFavorite(this, userId, recipe.getId());
+        if (favorited) {
+            UserRepository.removeFavorite(this, userId, recipe.getId());
+            Toast.makeText(this, "已取消收藏", Toast.LENGTH_SHORT).show();
+        } else {
+            UserRepository.addFavorite(this, userId, recipe.getId());
+            Toast.makeText(this, "已收藏", Toast.LENGTH_SHORT).show();
+        }
+        refreshFavoriteState();
+    }
+
+    private void refreshFavoriteState() {
+        if (recipe == null || userId <= 0) return;
+        boolean favorited = UserRepository.isFavorite(this, userId, recipe.getId());
+        btnFavorite.setText(favorited ? "取消收藏" : "收藏食谱");
     }
 
     private String joinWithSlash(List<String> list) {
