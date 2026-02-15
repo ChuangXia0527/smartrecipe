@@ -3,13 +3,16 @@ package com.example.smartrecipe.ui.voice;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.speech.RecognizerIntent;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,10 +29,14 @@ import com.example.smartrecipe.recommend.RecommendEngine;
 import com.example.smartrecipe.ui.detail.RecipeDetailActivity;
 import com.example.smartrecipe.ui.main.RecipeAdapter;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class VoiceActivity extends AppCompatActivity {
+
+    private static final String TAG_VOICE_TRACK = "VoiceTrack";
 
     private TextView tvResultText, tvParsed;
     private RecyclerView rvRecommend;
@@ -41,20 +48,28 @@ public class VoiceActivity extends AppCompatActivity {
     // 申请录音权限
     private final ActivityResultLauncher<String> requestAudioPermission =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {
-                if (granted) startVoiceInput();
-                else Toast.makeText(this, "没有录音权限，无法语音识别", Toast.LENGTH_SHORT).show();
+                if (granted) {
+                    startVoiceInput();
+                } else {
+                    trackVoiceEvent("permission_denied", "request_permission_result_denied");
+                    showPermissionDeniedDialog();
+                }
             });
 
     // 启动系统语音识别面板并接收结果
     private final ActivityResultLauncher<Intent> voiceLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
                 if (result.getResultCode() != RESULT_OK || result.getData() == null) {
-                    Toast.makeText(this, "未识别到语音", Toast.LENGTH_SHORT).show();
+                    trackVoiceEvent("recognition_failure", "result_not_ok_or_data_null");
+                    Toast.makeText(this, "未识别到语音，请改用文本输入", Toast.LENGTH_SHORT).show();
+                    fallbackToTextInput();
                     return;
                 }
                 ArrayList<String> list = result.getData().getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                 if (list == null || list.isEmpty()) {
-                    Toast.makeText(this, "识别结果为空", Toast.LENGTH_SHORT).show();
+                    trackVoiceEvent("empty_result", "extra_results_empty");
+                    Toast.makeText(this, "识别结果为空，请改用文本输入", Toast.LENGTH_SHORT).show();
+                    fallbackToTextInput();
                     return;
                 }
                 String text = list.get(0);
@@ -116,11 +131,44 @@ public class VoiceActivity extends AppCompatActivity {
         intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "请说出你的需求，例如：低脂鸡胸肉，不要辣");
         intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3);
 
+        if (intent.resolveActivity(getPackageManager()) == null) {
+            trackVoiceEvent("recognition_failure", "recognizer_intent_unavailable");
+            Toast.makeText(this, "当前设备不支持语音识别，已切换为文本输入", Toast.LENGTH_SHORT).show();
+            fallbackToTextInput();
+            return;
+        }
+
         try {
             voiceLauncher.launch(intent);
         } catch (Exception e) {
-            Toast.makeText(this, "当前设备不支持语音识别", Toast.LENGTH_SHORT).show();
+            trackVoiceEvent("recognition_failure", "launch_exception:" + e.getClass().getSimpleName());
+            Toast.makeText(this, "语音识别启动失败，已切换为文本输入", Toast.LENGTH_SHORT).show();
+            fallbackToTextInput();
         }
+    }
+
+
+    private void showPermissionDeniedDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("需要录音权限")
+                .setMessage("语音输入需要录音权限，请前往系统设置开启后重试。")
+                .setNegativeButton("取消", null)
+                .setPositiveButton("去设置开启权限", (dialog, which) -> openAppSettings())
+                .show();
+    }
+
+    private void openAppSettings() {
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.setData(Uri.fromParts("package", getPackageName(), null));
+        startActivity(intent);
+    }
+
+    private void fallbackToTextInput() {
+        etText.requestFocus();
+    }
+
+    private void trackVoiceEvent(String event, String detail) {
+        Log.i(TAG_VOICE_TRACK, "event=" + event + ", detail=" + detail);
     }
 
     /**
