@@ -37,6 +37,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         if (!SessionManager.isLoggedIn(this)) {
+            Intent authIntent = new Intent(this, AuthActivity.class);
+            if (authIntent.resolveActivity(getPackageManager()) != null) {
+                startActivity(authIntent);
+                finish();
+                return;
+            } else {
+                Toast.makeText(this, "登录页未注册，已进入游客模式", Toast.LENGTH_LONG).show();
+            }
             startActivity(new Intent(this, AuthActivity.class));
             finish();
             return;

@@ -21,6 +21,14 @@
         tools:replace="android:theme,android:label"
         tools:targetApi="31">
 
+        <activity android:name="com.example.smartrecipe.ui.user.HistoryActivity" />
+        <activity android:name="com.example.smartrecipe.ui.user.FavoritesActivity" />
+        <activity android:name="com.example.smartrecipe.ui.user.UserPreferenceActivity" />
+        <activity android:name="com.example.smartrecipe.ui.auth.AuthActivity" />
+        <activity android:name="com.example.smartrecipe.ui.voice.VoiceActivity" />
+        <activity android:name="com.example.smartrecipe.ui.detail.RecipeDetailActivity" />
+        <activity android:name="com.example.smartrecipe.ui.recognize.RecognizeResultActivity" />
+        <activity android:name="com.example.smartrecipe.ui.recognize.RecognizeActivity" />
         <activity android:name=".ui.user.HistoryActivity" />
         <activity android:name=".ui.user.FavoritesActivity" />
         <activity android:name=".ui.user.UserPreferenceActivity" />
@@ -31,7 +39,7 @@
         <activity android:name=".ui.recognize.RecognizeActivity" />
 
         <activity
-            android:name=".MainActivity"
+            android:name="com.example.smartrecipe.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
