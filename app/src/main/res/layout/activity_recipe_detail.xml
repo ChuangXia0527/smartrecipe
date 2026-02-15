@@ -16,6 +16,13 @@
             android:textSize="22sp"
             android:textStyle="bold" />
 
+        <Button
+            android:id="@+id/btnFavoriteToggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="收藏食谱" />
+
         <TextView
             android:id="@+id/tvMeta"
             android:layout_width="match_parent"
@@ -35,8 +42,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="用料"
-            android:textStyle="bold"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvIngredients"
@@ -50,8 +57,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="步骤"
-            android:textStyle="bold"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvSteps"
