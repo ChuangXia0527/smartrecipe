@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.ImageDecoder;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,13 +18,10 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.OptIn;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.CameraSelector;
-import androidx.camera.core.ExperimentalGetImage;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageCaptureException;
-import androidx.camera.core.ImageProxy;
 import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
@@ -35,10 +31,9 @@ import com.example.smartrecipe.R;
 import com.example.smartrecipe.ai.vision.IngredientClassifier;
 import com.google.common.util.concurrent.ListenableFuture;
 
+import java.io.File;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 
 public class RecognizeActivity extends AppCompatActivity {
@@ -139,11 +134,22 @@ public class RecognizeActivity extends AppCompatActivity {
         // 拍照模式隐藏相册预览
         ivPicked.setVisibility(View.GONE);
 
-        imageCapture.takePicture(ContextCompat.getMainExecutor(this),
-                new ImageCapture.OnImageCapturedCallback() {
-                    @OptIn(markerClass = ExperimentalGetImage.class) @Override
-                    public void onCaptureSuccess(@NonNull ImageProxy imageProxy) {
-                        classifyFromImageProxy(imageProxy);
+        File outputFile = new File(getCacheDir(), "capture_" + System.currentTimeMillis() + ".jpg");
+        ImageCapture.OutputFileOptions outputOptions =
+                new ImageCapture.OutputFileOptions.Builder(outputFile).build();
+
+        imageCapture.takePicture(outputOptions, ContextCompat.getMainExecutor(this),
+                new ImageCapture.OnImageSavedCallback() {
+                    @Override
+                    public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
+                        Uri savedUri = outputFileResults.getSavedUri();
+                        if (savedUri == null) {
+                            savedUri = Uri.fromFile(outputFile);
+                        }
+
+                        Toast.makeText(RecognizeActivity.this,
+                                "拍照成功，正在按相册识别流程处理", Toast.LENGTH_SHORT).show();
+                        processGalleryUri(savedUri);
                     }
 
                     @Override
@@ -152,23 +158,6 @@ public class RecognizeActivity extends AppCompatActivity {
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
-    }
-
-    @ExperimentalGetImage
-    private void classifyFromImageProxy(@NonNull ImageProxy imageProxy) {
-        Image mediaImage = imageProxy.getImage();
-        if (mediaImage == null) {
-            imageProxy.close();
-            Toast.makeText(this, "获取图片失败", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // ImageProxy -> Bitmap（用 YUV 转换最规范，但工作量较大）
-        // 这里给你一个“够用且简单”的办法：直接走 Preview/拍照更复杂的转换不写
-        // ✅ 推荐：答辩主用“相册选择”演示，稳定且不需要这段复杂转换
-
-        imageProxy.close();
-        Toast.makeText(this, "拍照推理需要YUV转Bitmap（可选增强）。建议先用相册选择演示，更稳定。", Toast.LENGTH_LONG).show();
     }
 
     private void processGalleryUri(@NonNull Uri uri) {
