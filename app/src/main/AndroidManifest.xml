@@ -29,6 +29,14 @@
         <activity android:name="com.example.smartrecipe.ui.detail.RecipeDetailActivity" />
         <activity android:name="com.example.smartrecipe.ui.recognize.RecognizeResultActivity" />
         <activity android:name="com.example.smartrecipe.ui.recognize.RecognizeActivity" />
+        <activity android:name=".ui.user.HistoryActivity" />
+        <activity android:name=".ui.user.FavoritesActivity" />
+        <activity android:name=".ui.user.UserPreferenceActivity" />
+        <activity android:name=".ui.auth.AuthActivity" />
+        <activity android:name=".ui.voice.VoiceActivity" />
+        <activity android:name=".ui.detail.RecipeDetailActivity" />
+        <activity android:name=".ui.recognize.RecognizeResultActivity" />
+        <activity android:name=".ui.recognize.RecognizeActivity" />
 
         <activity
             android:name="com.example.smartrecipe.MainActivity"

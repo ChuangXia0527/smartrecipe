@@ -20,6 +20,7 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
+        <!-- 首页 -->
         <LinearLayout
             android:id="@+id/panelHome"
             android:layout_width="match_parent"
@@ -59,6 +60,7 @@
                 android:paddingRight="8dp" />
         </LinearLayout>
 
+        <!-- 发现 -->
         <ScrollView
             android:id="@+id/panelDiscover"
             android:layout_width="match_parent"
@@ -133,12 +135,14 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:text="节气食物 / 男性养生 / 女性养生 / 脑力补充 / 历史上的今天"
+                        android:text="• 节气食物\n• 男性养生\n• 女性养生\n• 脑力补充\n• 历史上的今天"
                         android:textColor="#777777"
                         android:textSize="17sp" />
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
 
+        <!-- 收藏 -->
         <LinearLayout
             android:id="@+id/panelFavorite"
             android:layout_width="match_parent"
@@ -153,6 +157,7 @@
                 android:layout_height="match_parent" />
         </LinearLayout>
 
+        <!-- 我的 -->
         <ScrollView
             android:id="@+id/panelMine"
             android:layout_width="match_parent"
@@ -211,6 +216,65 @@
 
         <TextView
             android:id="@+id/tabHome"
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:background="#FFFFFF"
+        android:elevation="6dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tabHome"
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:background="#FFFFFF"
+        android:elevation="6dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tabHome"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="智能食谱推荐"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="8dp">
+
+        <EditText
+            android:id="@+id/etSearch"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="搜索菜名/标签/食材" />
+
+        <Button
+            android:id="@+id/btnSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:text="搜索" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="8dp">
+
+        <Button
+            android:id="@+id/btnRecognize"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -238,6 +302,79 @@
             android:text="收藏"
             android:textColor="#E7B623"
             android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/tabFavorite"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="收藏"
+            android:textColor="#E7B623"
+            android:textSize="24sp" />
+        <View
+            android:layout_width="8dp"
+            android:layout_height="1dp" />
+
+        <TextView
+            android:id="@+id/tabFavorite"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="收藏"
+            android:textColor="#E7B623"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/tabMine"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="我的"
+            android:textColor="#E7B623"
+            android:textSize="24sp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="12dp">
+
+        <Button
+            android:id="@+id/btnPreference"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="偏好设置" />
+
+        <Button
+            android:id="@+id/btnFavorite"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_weight="1"
+            android:text="我的收藏" />
+
+        <Button
+            android:id="@+id/btnHistory"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_weight="1"
+            android:text="历史" />
+
+        <Button
+            android:id="@+id/btnLogout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_weight="1"
+            android:text="退出" />
+    </LinearLayout>
 
         <TextView
             android:id="@+id/tabMine"
