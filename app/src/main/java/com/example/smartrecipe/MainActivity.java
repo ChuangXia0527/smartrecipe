@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,6 +26,7 @@ import com.example.smartrecipe.ui.detail.RecipeDetailActivity;
 import com.example.smartrecipe.ui.main.FavoriteGridAdapter;
 import com.example.smartrecipe.ui.main.RecipeAdapter;
 import com.example.smartrecipe.ui.recognize.RecognizeActivity;
+import com.example.smartrecipe.ui.user.FavoritesActivity;
 import com.example.smartrecipe.ui.user.HistoryActivity;
 import com.example.smartrecipe.ui.user.UserPreferenceActivity;
 import com.example.smartrecipe.ui.voice.VoiceActivity;
@@ -48,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
 
     private RecipeAdapter recipeAdapter;
     private FavoriteGridAdapter favoriteGridAdapter;
+    private RecipeAdapter recipeAdapter;
+    private long userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +67,9 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(this, "登录页未注册，已进入游客模式", Toast.LENGTH_LONG).show();
             }
+            startActivity(new Intent(this, AuthActivity.class));
+            finish();
+            return;
         }
         userId = SessionManager.currentUserId(this);
 
@@ -132,6 +140,22 @@ public class MainActivity extends AppCompatActivity {
         btnRecognize.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, RecognizeActivity.class)));
         btnVoice.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, VoiceActivity.class)));
         btnPreference.setOnClickListener(v -> startActivity(new Intent(this, UserPreferenceActivity.class)));
+        Button btnSearch = findViewById(R.id.btnSearch);
+        Button btnPreference = findViewById(R.id.btnPreference);
+        Button btnFavorite = findViewById(R.id.btnFavorite);
+        Button btnHistory = findViewById(R.id.btnHistory);
+        Button btnLogout = findViewById(R.id.btnLogout);
+
+        EditText etSearch = findViewById(R.id.etSearch);
+
+        btnRecognize.setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, RecognizeActivity.class)));
+
+        btnVoice.setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, VoiceActivity.class)));
+
+        btnPreference.setOnClickListener(v -> startActivity(new Intent(this, UserPreferenceActivity.class)));
+        btnFavorite.setOnClickListener(v -> startActivity(new Intent(this, FavoritesActivity.class)));
         btnHistory.setOnClickListener(v -> startActivity(new Intent(this, HistoryActivity.class)));
 
         btnLogout.setOnClickListener(v -> {
@@ -153,6 +177,13 @@ public class MainActivity extends AppCompatActivity {
         List<Recipe> allRecipes = RecipeRepository.getAllRecipes(this);
         UserPreference pref = UserRepository.getPreference(this, userId);
         List<Recipe> recommends = PersonalizedRecommendEngine.recommend(
+
+        RecyclerView rv = findViewById(R.id.rvRecipes);
+        rv.setLayoutManager(new LinearLayoutManager(this));
+
+        List<Recipe> allRecipes = RecipeRepository.getAllRecipes(this);
+        UserPreference pref = UserRepository.getPreference(this, userId);
+        List<Recipe> homeRecommend = PersonalizedRecommendEngine.recommend(
                 allRecipes,
                 pref,
                 UserRepository.favoriteRecipeIds(this, userId),
@@ -196,5 +227,28 @@ public class MainActivity extends AppCompatActivity {
         if (tabIndex == 1) tvMainTitle.setText("发现");
         if (tabIndex == 2) tvMainTitle.setText("我的收藏");
         if (tabIndex == 3) tvMainTitle.setText("我的");
+                30
+        );
+
+        recipeAdapter = new RecipeAdapter(homeRecommend, recipe -> {
+            Intent it = new Intent(MainActivity.this, RecipeDetailActivity.class);
+            it.putExtra("recipe_id", recipe.getId());
+            startActivity(it);
+        });
+        rv.setAdapter(recipeAdapter);
+
+        btnSearch.setOnClickListener(v -> {
+            String keyword = etSearch.getText().toString().trim();
+            List<Recipe> searchResult = RecipeRepository.search(this, keyword);
+            rv.setAdapter(new RecipeAdapter(searchResult, recipe -> {
+                Intent it = new Intent(MainActivity.this, RecipeDetailActivity.class);
+                it.putExtra("recipe_id", recipe.getId());
+                startActivity(it);
+            }));
+            if (!keyword.isEmpty()) {
+                UserRepository.trackSearch(this, userId, keyword);
+            }
+            Toast.makeText(this, "共找到 " + searchResult.size() + " 个食谱", Toast.LENGTH_SHORT).show();
+        });
     }
 }

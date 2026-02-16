@@ -62,6 +62,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
         tvMeta.setText(recipe.getMinutes() + "分钟 · " + recipe.getCalorie() + "kcal");
         tvTags.setText("标签：" + joinWithSlash(recipe.getTags()));
         tvIngredients.setText(joinWithIngredientCount(recipe.getIngredients()));
+        tvIngredients.setText(joinWithComma(recipe.getIngredients()));
         tvSteps.setText(formatSteps(recipe.getSteps()));
 
         refreshFavoriteState();
@@ -85,6 +86,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
         if (recipe == null || userId <= 0) return;
         boolean favorited = UserRepository.isFavorite(this, userId, recipe.getId());
         btnFavorite.setText(favorited ? "★ 已收藏（点击取消）" : "☆ 收藏食谱");
+        btnFavorite.setText(favorited ? "取消收藏" : "收藏食谱");
     }
 
     private String joinWithSlash(List<String> list) {
