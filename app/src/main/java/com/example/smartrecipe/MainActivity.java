@@ -140,6 +140,10 @@ public class MainActivity extends AppCompatActivity {
         btnRecognize.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, RecognizeActivity.class)));
         btnVoice.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, VoiceActivity.class)));
         btnPreference.setOnClickListener(v -> startActivity(new Intent(this, UserPreferenceActivity.class)));
+
+        btnRecognize.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, RecognizeActivity.class)));
+        btnVoice.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, VoiceActivity.class)));
+        btnPreference.setOnClickListener(v -> startActivity(new Intent(this, UserPreferenceActivity.class)));
         Button btnSearch = findViewById(R.id.btnSearch);
         Button btnPreference = findViewById(R.id.btnPreference);
         Button btnFavorite = findViewById(R.id.btnFavorite);
