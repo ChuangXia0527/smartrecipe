@@ -45,6 +45,9 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(this, "登录页未注册，已进入游客模式", Toast.LENGTH_LONG).show();
             }
+            startActivity(new Intent(this, AuthActivity.class));
+            finish();
+            return;
         }
         userId = SessionManager.currentUserId(this);
 
