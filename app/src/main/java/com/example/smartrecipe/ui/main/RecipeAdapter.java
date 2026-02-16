@@ -5,7 +5,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smartrecipe.R;
@@ -34,14 +33,25 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     public void onBindViewHolder(RecipeViewHolder holder, int position) {
         Recipe recipe = recipes.get(position);
         holder.name.setText(recipe.getName());
+        holder.meta.setText(recipe.getMinutes() + "分钟 · " + recipe.getCalorie() + "kcal");
+        holder.tags.setText("标签：" + joinTags(recipe.getTags()));
 
-        // 设置点击事件
         holder.itemView.setOnClickListener(v -> listener.onItemClick(recipe));
     }
 
     @Override
     public int getItemCount() {
         return recipes.size();
+    }
+
+    private String joinTags(List<String> tags) {
+        if (tags == null || tags.isEmpty()) return "-";
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < tags.size(); i++) {
+            sb.append(tags.get(i));
+            if (i != tags.size() - 1) sb.append(" / ");
+        }
+        return sb.toString();
     }
 
     public interface OnItemClickListener {
@@ -51,10 +61,14 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     static class RecipeViewHolder extends RecyclerView.ViewHolder {
 
         TextView name;
+        TextView meta;
+        TextView tags;
 
         public RecipeViewHolder(View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.tvRecipeName);
+            meta = itemView.findViewById(R.id.tvRecipeMeta);
+            tags = itemView.findViewById(R.id.tvRecipeTags);
         }
     }
 }
