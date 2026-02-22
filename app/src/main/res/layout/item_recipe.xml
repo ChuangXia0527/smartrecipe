@@ -1,26 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="12dp"
-    android:layout_marginTop="6dp"
-    android:layout_marginRight="12dp"
-    android:layout_marginBottom="6dp"
-    android:foreground="?attr/selectableItemBackground"
+    android:layout_marginLeft="16dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginRight="16dp"
+    android:layout_marginBottom="8dp"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    app:cardBackgroundColor="@android:color/white"
+    app:cardCornerRadius="18dp"
+    app:cardElevation="2dp"
+    app:strokeColor="#14000000"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="14dp">
+        android:padding="16dp">
 
         <TextView
             android:id="@+id/tvRecipeName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Recipe Name"
+            android:textColor="@color/textPrimary"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -28,20 +35,25 @@
             android:id="@+id/tvRecipeMeta"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="6dp"
             android:text="⏱ 20 分钟 · 🔥 450 kcal"
-            android:textColor="#666666"
+            android:textColor="@color/textSecondary"
             android:textSize="13sp" />
 
         <TextView
             android:id="@+id/tvRecipeTags"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_tag"
+            android:paddingLeft="10dp"
+            android:paddingTop="4dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="4dp"
             android:text="标签：快手、低脂"
-            android:textColor="#666666"
-            android:textSize="13sp" />
+            android:textColor="@color/accent"
+            android:textSize="12sp" />
 
     </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>
