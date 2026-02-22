@@ -14,11 +14,13 @@ import com.example.smartrecipe.data.repository.RecipeRepository;
 import com.example.smartrecipe.data.session.SessionManager;
 import com.example.smartrecipe.ui.common.RecipeImageResolver;
 import com.example.smartrecipe.data.user.UserRepository;
+import com.example.smartrecipe.ui.common.RecipeImageResolver;
 
 import java.util.List;
 
 public class RecipeDetailActivity extends AppCompatActivity {
 
+    private TextView tvTitle, tvMeta, tvTags, tvIngredients, tvSteps;
     private TextView tvTitle, tvMeta, tvTags, tvIngredients, tvSteps, tvRecipeCoverEmoji;
     private ImageView ivRecipeCover;
     private Button btnFavorite;
@@ -56,6 +58,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
         tvTags.setText("标签：" + joinWithSlash(recipe.getTags()));
         tvIngredients.setText(joinWithComma(recipe.getIngredients()));
         tvSteps.setText(formatSteps(recipe.getSteps()));
+        ivRecipeCover.setImageResource(RecipeImageResolver.resolveImageRes(this, recipe));
         ivRecipeCover.setBackgroundResource(RecipeImageResolver.resolveBackgroundRes(recipe));
         tvRecipeCoverEmoji.setText(RecipeImageResolver.resolveEmoji(recipe));
 
