@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/bgApp"
     android:orientation="vertical">
 
     <FrameLayout
@@ -10,179 +11,226 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <!-- 首页 -->
         <LinearLayout
             android:id="@+id/sectionHome"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="16dp"
-                android:paddingTop="14dp"
-                android:paddingRight="16dp"
-                android:text="首页"
-                android:textSize="22sp"
-                android:textStyle="bold" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingBottom="8dp">
+                android:background="@drawable/bg_home_header"
+                android:orientation="vertical"
+                android:paddingLeft="20dp"
+                android:paddingTop="22dp"
+                android:paddingRight="20dp"
+                android:paddingBottom="18dp">
 
-                <EditText
-                    android:id="@+id/etSearch"
-                    android:layout_width="0dp"
+                <TextView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:hint="搜索菜名/标签/食材" />
+                    android:text="SmartRecipe"
+                    android:textColor="@android:color/white"
+                    android:textSize="26sp"
+                    android:textStyle="bold" />
 
-                <Button
-                    android:id="@+id/btnSearch"
-                    android:layout_width="wrap_content"
+                <TextView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:text="搜索" />
+                    android:layout_marginTop="4dp"
+                    android:text="今天吃什么？探索专属于你的美味灵感"
+                    android:textColor="#E6FFFFFF"
+                    android:textSize="14sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/bg_search_box"
+                    android:elevation="2dp"
+                    android:orientation="horizontal"
+                    android:padding="6dp">
+
+                    <EditText
+                        android:id="@+id/etSearch"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:hint="搜索菜名 / 标签 / 食材"
+                        android:paddingLeft="12dp"
+                        android:paddingRight="8dp"
+                        android:textColor="@color/textPrimary"
+                        android:textColorHint="@color/textSecondary" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSearch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="44dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:text="搜索"
+                        android:textSize="14sp"
+                        app:backgroundTint="@color/accent"
+                        app:cornerRadius="12dp" />
+                </LinearLayout>
             </LinearLayout>
 
             <TextView
                 android:id="@+id/tvSectionTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingBottom="6dp"
+                android:layout_marginTop="14dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
                 android:text="推荐食谱"
+                android:textColor="@color/textPrimary"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvEmpty"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
+                android:paddingLeft="20dp"
+                android:paddingTop="6dp"
+                android:paddingRight="20dp"
                 android:paddingBottom="6dp"
                 android:text="暂无结果，可尝试更换关键词"
-                android:textColor="#777777"
+                android:textColor="@color/textSecondary"
                 android:visibility="gone" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvRecipes"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:clipToPadding="false"
+                android:paddingBottom="12dp" />
         </LinearLayout>
 
-        <!-- 功能 -->
-        <LinearLayout
+        <ScrollView
             android:id="@+id/sectionFeature"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="16dp"
+            android:fillViewport="true"
             android:visibility="gone">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="功能"
-                android:textSize="22sp"
-                android:textStyle="bold" />
+                android:orientation="vertical"
+                android:padding="20dp">
 
-            <Button
-                android:id="@+id/btnRecognize"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="拍照识别" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="智能功能"
+                    android:textColor="@color/textPrimary"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/btnVoice"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="语音识别" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="让 AI 帮你更快发现可做的菜"
+                    android:textColor="@color/textSecondary" />
 
-            <Button
-                android:id="@+id/btnPreference"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="偏好设置" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnRecognize"
+                    style="@style/Widget.SmartRecipe.FeatureButton"
+                    android:layout_marginTop="16dp"
+                    android:text="📷 拍照识别" />
 
-            <Button
-                android:id="@+id/btnIngredientFilter"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="食材筛选" />
-        </LinearLayout>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnVoice"
+                    style="@style/Widget.SmartRecipe.FeatureButton"
+                    android:layout_marginTop="12dp"
+                    android:text="🎙 语音识别" />
 
-        <!-- 我的 -->
-        <LinearLayout
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnPreference"
+                    style="@style/Widget.SmartRecipe.FeatureButton"
+                    android:layout_marginTop="12dp"
+                    android:text="⚙ 偏好设置" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnIngredientFilter"
+                    style="@style/Widget.SmartRecipe.FeatureButton"
+                    android:layout_marginTop="12dp"
+                    android:text="🥬 食材筛选" />
+            </LinearLayout>
+        </ScrollView>
+
+        <ScrollView
             android:id="@+id/sectionMine"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="16dp"
+            android:fillViewport="true"
             android:visibility="gone">
 
-            <TextView
-                android:id="@+id/tvMineTitle"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="我的"
-                android:textSize="22sp"
-                android:textStyle="bold" />
+                android:orientation="vertical"
+                android:padding="20dp">
 
-            <TextView
-                android:id="@+id/tvCurrentUser"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="当前用户：-"
-                android:textColor="#666666" />
+                <TextView
+                    android:id="@+id/tvMineTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="我的"
+                    android:textColor="@color/textPrimary"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/btnProfile"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="我的信息" />
+                <TextView
+                    android:id="@+id/tvCurrentUser"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="当前用户：-"
+                    android:textColor="@color/textSecondary" />
 
-            <Button
-                android:id="@+id/btnFavorite"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="收藏" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnProfile"
+                    style="@style/Widget.SmartRecipe.FeatureButton"
+                    android:layout_marginTop="18dp"
+                    android:text="👤 我的信息" />
 
-            <Button
-                android:id="@+id/btnHistory"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="历史" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnFavorite"
+                    style="@style/Widget.SmartRecipe.FeatureButton"
+                    android:layout_marginTop="12dp"
+                    android:text="❤️ 收藏" />
 
-            <Button
-                android:id="@+id/btnLogout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="退出" />
-        </LinearLayout>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnHistory"
+                    style="@style/Widget.SmartRecipe.FeatureButton"
+                    android:layout_marginTop="12dp"
+                    android:text="🕘 历史" />
 
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnLogout"
+                    style="@style/Widget.SmartRecipe.FeatureButton"
+                    android:layout_marginTop="12dp"
+                    android:text="退出登录"
+                    app:backgroundTint="#FEE2E2"
+                    android:textColor="#991B1B" />
+            </LinearLayout>
+        </ScrollView>
     </FrameLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        app:itemActiveIndicatorStyle="@style/Widget.SmartRecipe.BottomNavActiveIndicator"
+        app:itemIconTint="@color/bottom_nav_tint"
+        app:itemTextColor="@color/bottom_nav_tint"
         app:menu="@menu/bottom_nav_menu" />
 
 </LinearLayout>

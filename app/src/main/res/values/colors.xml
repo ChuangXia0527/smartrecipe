@@ -2,5 +2,13 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="colorPrimary">#6200EE</color> <!-- 修改为你想要的颜色 -->
+
+    <color name="colorPrimary">#4F46E5</color>
+    <color name="colorPrimaryContainer">#E0E7FF</color>
+    <color name="colorSecondary">#0EA5A6</color>
+
+    <color name="bgApp">#F8FAFC</color>
+    <color name="accent">#4F46E5</color>
+    <color name="textPrimary">#0F172A</color>
+    <color name="textSecondary">#64748B</color>
 </resources>
