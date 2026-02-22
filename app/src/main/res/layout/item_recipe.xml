@@ -22,13 +22,6 @@
         android:orientation="horizontal"
         android:padding="14dp">
 
-        <ImageView
-            android:id="@+id/ivRecipeImage"
-            android:layout_width="84dp"
-            android:layout_height="84dp"
-            android:contentDescription="菜品图片"
-            android:scaleType="centerCrop"
-            android:src="@drawable/recipe_img_default" />
         <FrameLayout
             android:layout_width="84dp"
             android:layout_height="84dp">
@@ -37,17 +30,11 @@
                 android:id="@+id/ivRecipeImage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/recipe_img_default"
                 android:contentDescription="菜品图片"
-                android:scaleType="centerCrop" />
+                android:scaleType="centerCrop"
+                android:src="@drawable/recipe_img_default" />
 
-            <TextView
-                android:id="@+id/tvRecipeEmoji"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="🍽️"
-                android:textSize="28sp" />
+
         </FrameLayout>
 
         <LinearLayout
