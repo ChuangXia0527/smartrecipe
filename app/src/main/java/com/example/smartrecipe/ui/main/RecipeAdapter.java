@@ -3,12 +3,14 @@ package com.example.smartrecipe.ui.main;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smartrecipe.R;
 import com.example.smartrecipe.data.entity.Recipe;
+import com.example.smartrecipe.ui.common.RecipeImageResolver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         holder.name.setText(recipe.getName());
         holder.meta.setText("⏱ " + recipe.getMinutes() + " 分钟 · 🔥 " + recipe.getCalorie() + " kcal");
         holder.tags.setText("标签：" + joinList(recipe.getTags()));
+        holder.image.setBackgroundResource(RecipeImageResolver.resolveBackgroundRes(recipe));
+        holder.emoji.setText(RecipeImageResolver.resolveEmoji(recipe));
 
         holder.itemView.setOnClickListener(v -> listener.onItemClick(recipe));
     }
@@ -66,12 +70,16 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
     static class RecipeViewHolder extends RecyclerView.ViewHolder {
 
+        ImageView image;
+        TextView emoji;
         TextView name;
         TextView meta;
         TextView tags;
 
         public RecipeViewHolder(View itemView) {
             super(itemView);
+            image = itemView.findViewById(R.id.ivRecipeImage);
+            emoji = itemView.findViewById(R.id.tvRecipeEmoji);
             name = itemView.findViewById(R.id.tvRecipeName);
             meta = itemView.findViewById(R.id.tvRecipeMeta);
             tags = itemView.findViewById(R.id.tvRecipeTags);
