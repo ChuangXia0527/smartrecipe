@@ -2,5 +2,16 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="colorPrimary">#6200EE</color> <!-- 修改为你想要的颜色 -->
+
+    <color name="brandPrimary">#FF4F46E5</color>
+    <color name="brandPrimaryDark">#FF3730A3</color>
+    <color name="brandSecondary">#FFE0E7FF</color>
+
+    <color name="textPrimary">#FF1F2937</color>
+    <color name="textSecondary">#FF6B7280</color>
+    <color name="textHint">#FF9CA3AF</color>
+
+    <color name="bgTop">#FFF8FAFF</color>
+    <color name="bgBottom">#FFEEF2FF</color>
+    <color name="danger">#FFEF4444</color>
 </resources>
