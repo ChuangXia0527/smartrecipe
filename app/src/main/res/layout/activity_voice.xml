@@ -1,85 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:background="@color/bgApp"
+    android:fillViewport="true">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="语音输入推荐"
-        android:textStyle="bold"
-        android:textSize="20sp" />
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <TextView
-        android:id="@+id/tvHint"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="例：我想吃低脂鸡胸肉，不要辣；或者：不要番茄，想吃土豆"
-        android:textSize="14sp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="语音输入推荐"
+            android:textColor="@color/textPrimary"
+            android:textSize="22sp"
+            android:textStyle="bold" />
 
-    <Button
-        android:id="@+id/btnStartVoice"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:text="开始说话" />
+        <TextView
+            android:id="@+id/tvHint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="例：我想吃低脂鸡胸肉，不要辣；或者：不要番茄，想吃土豆"
+            android:textColor="@color/textSecondary" />
 
-    <EditText
-        android:id="@+id/etText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:hint="也可直接输入：低脂鸡胸肉，不要辣"
-        android:inputType="text" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnStartVoice"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="14dp"
+            android:text="🎙 开始说话"
+            app:backgroundTint="@color/accent"
+            app:cornerRadius="14dp" />
 
-    <Button
-        android:id="@+id/btnTextRecommend"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="文本推荐" />
+        <EditText
+            android:id="@+id/etText"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_input_surface"
+            android:hint="也可直接输入：低脂鸡胸肉，不要辣"
+            android:inputType="text"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:textColor="@color/textPrimary"
+            android:textColorHint="@color/textSecondary" />
 
-    <TextView
-        android:id="@+id/tvResultText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:text="识别结果："
-        android:textSize="14sp" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnTextRecommend"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="10dp"
+            android:text="文本推荐"
+            android:textColor="@color/textPrimary"
+            app:backgroundTint="@android:color/white"
+            app:cornerRadius="14dp"
+            app:strokeColor="#1E94A3B8"
+            app:strokeWidth="1dp" />
 
-    <TextView
-        android:id="@+id/tvParsed"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="解析结果："
-        android:textSize="14sp" />
+        <TextView
+            android:id="@+id/tvResultText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_search_box"
+            android:padding="12dp"
+            android:text="识别结果："
+            android:textColor="@color/textPrimary" />
 
-    <TextView
-        android:id="@+id/tvNoVoiceResult"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="暂无匹配结果，建议减少限制条件，例如删除‘不要xxx’后重试。"
-        android:textColor="#777777"
-        android:visibility="gone" />
+        <TextView
+            android:id="@+id/tvParsed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_search_box"
+            android:padding="12dp"
+            android:text="解析结果："
+            android:textColor="@color/textPrimary" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:text="推荐结果"
-        android:textStyle="bold"
-        android:textSize="18sp" />
+        <TextView
+            android:id="@+id/tvNoVoiceResult"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="暂无匹配结果，建议减少限制条件，例如删除‘不要xxx’后重试。"
+            android:textColor="@color/textSecondary"
+            android:visibility="gone" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvRecommend"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginTop="8dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="推荐结果"
+            android:textColor="@color/textPrimary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-</LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvRecommend"
+            android:layout_width="match_parent"
+            android:layout_height="360dp"
+            android:layout_marginTop="8dp"
+            android:clipToPadding="false"
+            android:paddingBottom="12dp" />
+
+    </LinearLayout>
+</ScrollView>
