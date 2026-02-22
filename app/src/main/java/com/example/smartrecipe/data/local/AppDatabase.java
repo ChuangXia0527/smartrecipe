@@ -15,7 +15,7 @@ import com.example.smartrecipe.data.local.entity.UserAccount;
 import com.example.smartrecipe.data.local.entity.UserBehavior;
 import com.example.smartrecipe.data.local.entity.UserPreference;
 
-@Database(entities = {UserAccount.class, UserPreference.class, FavoriteRecipe.class, UserBehavior.class}, version = 1)
+@Database(entities = {UserAccount.class, UserPreference.class, FavoriteRecipe.class, UserBehavior.class}, version = 1,exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     private static volatile AppDatabase INSTANCE;
 
