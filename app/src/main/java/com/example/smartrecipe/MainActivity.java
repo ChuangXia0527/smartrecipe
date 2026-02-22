@@ -2,11 +2,13 @@ package com.example.smartrecipe;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,8 +25,10 @@ import com.example.smartrecipe.ui.main.RecipeAdapter;
 import com.example.smartrecipe.ui.recognize.RecognizeActivity;
 import com.example.smartrecipe.ui.user.FavoritesActivity;
 import com.example.smartrecipe.ui.user.HistoryActivity;
+import com.example.smartrecipe.ui.user.ProfileActivity;
 import com.example.smartrecipe.ui.user.UserPreferenceActivity;
 import com.example.smartrecipe.ui.voice.VoiceActivity;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +43,11 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView tvSectionTitle;
     private TextView tvEmpty;
+    private TextView tvCurrentUser;
+
+    private View sectionHome;
+    private View sectionFeature;
+    private View sectionMine;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,10 +67,17 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
+        sectionHome = findViewById(R.id.sectionHome);
+        sectionFeature = findViewById(R.id.sectionFeature);
+        sectionMine = findViewById(R.id.sectionMine);
+
         Button btnRecognize = findViewById(R.id.btnRecognize);
         Button btnVoice = findViewById(R.id.btnVoice);
         Button btnSearch = findViewById(R.id.btnSearch);
         Button btnPreference = findViewById(R.id.btnPreference);
+        Button btnIngredientFilter = findViewById(R.id.btnIngredientFilter);
+
+        Button btnProfile = findViewById(R.id.btnProfile);
         Button btnFavorite = findViewById(R.id.btnFavorite);
         Button btnHistory = findViewById(R.id.btnHistory);
         Button btnLogout = findViewById(R.id.btnLogout);
@@ -72,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
         EditText etSearch = findViewById(R.id.etSearch);
         tvSectionTitle = findViewById(R.id.tvSectionTitle);
         tvEmpty = findViewById(R.id.tvEmpty);
+        tvCurrentUser = findViewById(R.id.tvCurrentUser);
 
         btnRecognize.setOnClickListener(v ->
                 startActivity(new Intent(MainActivity.this, RecognizeActivity.class)));
@@ -92,6 +109,12 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView rv = findViewById(R.id.rvRecipes);
         rv.setLayoutManager(new LinearLayoutManager(this));
+        recipeAdapter = new RecipeAdapter(new ArrayList<>(), recipe -> {
+            Intent it = new Intent(MainActivity.this, RecipeDetailActivity.class);
+            it.putExtra("recipe_id", recipe.getId());
+            startActivity(it);
+        });
+        rv.setAdapter(recipeAdapter);
 
         recipeAdapter = new RecipeAdapter(new ArrayList<>(), recipe -> {
             Intent it = new Intent(MainActivity.this, RecipeDetailActivity.class);
@@ -109,6 +132,25 @@ public class MainActivity extends AppCompatActivity {
                 UserRepository.behaviorRecipeScores(this, userId),
                 30
         );
+        renderRecipes(homeRecommend, "推荐食谱");
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNav);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.nav_home) {
+                showSection(0);
+                return true;
+            } else if (id == R.id.nav_feature) {
+                showSection(1);
+                return true;
+            } else if (id == R.id.nav_mine) {
+                showSection(2);
+                refreshMineInfo();
+                return true;
+            }
+            return false;
+        });
+        bottomNavigationView.setSelectedItemId(R.id.nav_home);
         renderRecipes(homeRecommend, "为你推荐");
 
         btnSearch.setOnClickListener(v -> {
@@ -121,6 +163,39 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "共找到 " + searchResult.size() + " 个食谱", Toast.LENGTH_SHORT).show();
         });
 
+        btnRecognize.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, RecognizeActivity.class)));
+        btnVoice.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, VoiceActivity.class)));
+        btnPreference.setOnClickListener(v -> startActivity(new Intent(this, UserPreferenceActivity.class)));
+
+        btnIngredientFilter.setOnClickListener(v -> openIngredientFilterDialog());
+
+        btnProfile.setOnClickListener(v -> startActivity(new Intent(this, ProfileActivity.class)));
+        btnFavorite.setOnClickListener(v -> startActivity(new Intent(this, FavoritesActivity.class)));
+        btnHistory.setOnClickListener(v -> startActivity(new Intent(this, HistoryActivity.class)));
+
+        btnLogout.setOnClickListener(v -> {
+            SessionManager.logout(this);
+            Intent it = new Intent(this, AuthActivity.class);
+            it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(it);
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshMineInfo();
+    }
+
+    private void showSection(int index) {
+        sectionHome.setVisibility(index == 0 ? View.VISIBLE : View.GONE);
+        sectionFeature.setVisibility(index == 1 ? View.VISIBLE : View.GONE);
+        sectionMine.setVisibility(index == 2 ? View.VISIBLE : View.GONE);
+    }
+
+    private void refreshMineInfo() {
+        String username = UserRepository.currentUsername(this, userId);
+        tvCurrentUser.setText("当前用户：" + (username == null ? "-" : username));
         btnQuickLowFat.setOnClickListener(v -> {
             List<Recipe> out = new ArrayList<>();
             for (Recipe recipe : allRecipes) {
@@ -144,5 +219,49 @@ public class MainActivity extends AppCompatActivity {
         tvSectionTitle.setText(sectionTitle);
         recipeAdapter.replaceData(list);
         tvEmpty.setVisibility(list == null || list.isEmpty() ? TextView.VISIBLE : TextView.GONE);
+    }
+
+    private void openIngredientFilterDialog() {
+        final EditText et = new EditText(this);
+        et.setHint("输入食材，多个用逗号分隔，如：番茄,鸡蛋");
+        new AlertDialog.Builder(this)
+                .setTitle("食材筛选")
+                .setView(et)
+                .setNegativeButton("取消", null)
+                .setPositiveButton("筛选", (dialog, which) -> {
+                    String text = et.getText().toString().trim();
+                    List<Recipe> out = filterByIngredients(text);
+                    renderRecipes(out, text.isEmpty() ? "推荐食谱" : "食材筛选：" + text);
+                    BottomNavigationView nav = findViewById(R.id.bottomNav);
+                    nav.setSelectedItemId(R.id.nav_home);
+                })
+                .show();
+    }
+
+    private List<Recipe> filterByIngredients(String text) {
+        if (text == null || text.isEmpty()) return homeRecommend;
+        String[] tokens = text.replace("，", ",").split(",");
+        List<Recipe> out = new ArrayList<>();
+        for (Recipe recipe : allRecipes) {
+            if (recipe.getIngredients() == null) continue;
+            boolean allHit = true;
+            for (String token : tokens) {
+                String t = token.trim();
+                if (t.isEmpty()) continue;
+                boolean hit = false;
+                for (String ing : recipe.getIngredients()) {
+                    if (ing != null && ing.contains(t)) {
+                        hit = true;
+                        break;
+                    }
+                }
+                if (!hit) {
+                    allHit = false;
+                    break;
+                }
+            }
+            if (allHit) out.add(recipe);
+        }
+        return out;
     }
 }

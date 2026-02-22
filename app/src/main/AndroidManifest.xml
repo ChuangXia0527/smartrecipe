@@ -21,6 +21,7 @@
         tools:replace="android:theme,android:label"
         tools:targetApi="31">
 
+        <activity android:name="com.example.smartrecipe.ui.user.ProfileActivity" />
         <activity android:name="com.example.smartrecipe.ui.user.HistoryActivity" />
         <activity android:name="com.example.smartrecipe.ui.user.FavoritesActivity" />
         <activity android:name="com.example.smartrecipe.ui.user.UserPreferenceActivity" />

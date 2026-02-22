@@ -16,4 +16,7 @@ public interface UserAccountDao {
 
     @Query("SELECT * FROM user_account WHERE id = :id LIMIT 1")
     UserAccount findById(long id);
+
+    @Query("UPDATE user_account SET username = :username, password = :password WHERE id = :id")
+    int updateCredentials(long id, String username, String password);
 }
