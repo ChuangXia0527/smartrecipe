@@ -21,6 +21,7 @@
         <item name="android:insetBottom">0dp</item>
     </style>
 
+    <style name="Widget.SmartRecipe.BottomNavActiveIndicator" parent="Widget.Material3.NavigationBar.ActiveIndicator">
     <style name="Widget.SmartRecipe.BottomNavActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
         <item name="android:color">@color/colorPrimaryContainer</item>
         <item name="shapeAppearance">@style/ShapeAppearance.Material3.Corner.ExtraLarge</item>

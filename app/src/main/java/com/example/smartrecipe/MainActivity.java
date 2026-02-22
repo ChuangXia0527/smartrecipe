@@ -5,10 +5,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,6 +28,9 @@ import com.example.smartrecipe.ui.user.ProfileActivity;
 import com.example.smartrecipe.ui.user.UserPreferenceActivity;
 import com.example.smartrecipe.ui.voice.VoiceActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -192,14 +195,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openIngredientFilterDialog() {
-        final EditText et = new EditText(this);
-        et.setHint("输入食材，多个用逗号分隔，如：番茄,鸡蛋");
-        new AlertDialog.Builder(this)
+        TextInputLayout inputLayout = new TextInputLayout(this);
+        inputLayout.setHint("输入食材，多个用逗号分隔，如：番茄,鸡蛋");
+        inputLayout.setBoxBackgroundMode(TextInputLayout.BOX_BACKGROUND_OUTLINE);
+
+        TextInputEditText et = new TextInputEditText(this);
+        et.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+        inputLayout.addView(et);
+
+        int padding = (int) (20 * getResources().getDisplayMetrics().density);
+        inputLayout.setPadding(padding, 10, padding, 0);
+
+        new MaterialAlertDialogBuilder(this)
                 .setTitle("食材筛选")
-                .setView(et)
+                .setView(inputLayout)
                 .setNegativeButton("取消", null)
                 .setPositiveButton("筛选", (dialog, which) -> {
-                    String text = et.getText().toString().trim();
+                    String text = et.getText() == null ? "" : et.getText().toString().trim();
                     List<Recipe> out = filterByIngredients(text);
                     renderRecipes(out, text.isEmpty() ? "为你推荐" : "食材筛选：" + text);
 
