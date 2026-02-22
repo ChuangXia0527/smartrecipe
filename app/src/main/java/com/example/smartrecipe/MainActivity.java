@@ -81,14 +81,41 @@ public class MainActivity extends AppCompatActivity {
         Button btnFavorite = findViewById(R.id.btnFavorite);
         Button btnHistory = findViewById(R.id.btnHistory);
         Button btnLogout = findViewById(R.id.btnLogout);
+        Button btnQuickLowFat = findViewById(R.id.btnQuickLowFat);
+        Button btnQuickFast = findViewById(R.id.btnQuickFast);
+        Button btnResetList = findViewById(R.id.btnResetList);
 
         EditText etSearch = findViewById(R.id.etSearch);
         tvSectionTitle = findViewById(R.id.tvSectionTitle);
         tvEmpty = findViewById(R.id.tvEmpty);
         tvCurrentUser = findViewById(R.id.tvCurrentUser);
 
+        btnRecognize.setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, RecognizeActivity.class)));
+
+        btnVoice.setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, VoiceActivity.class)));
+
+        btnPreference.setOnClickListener(v -> startActivity(new Intent(this, UserPreferenceActivity.class)));
+        btnFavorite.setOnClickListener(v -> startActivity(new Intent(this, FavoritesActivity.class)));
+        btnHistory.setOnClickListener(v -> startActivity(new Intent(this, HistoryActivity.class)));
+
+        btnLogout.setOnClickListener(v -> {
+            SessionManager.logout(this);
+            Intent it = new Intent(this, AuthActivity.class);
+            it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(it);
+        });
+
         RecyclerView rv = findViewById(R.id.rvRecipes);
         rv.setLayoutManager(new LinearLayoutManager(this));
+        recipeAdapter = new RecipeAdapter(new ArrayList<>(), recipe -> {
+            Intent it = new Intent(MainActivity.this, RecipeDetailActivity.class);
+            it.putExtra("recipe_id", recipe.getId());
+            startActivity(it);
+        });
+        rv.setAdapter(recipeAdapter);
+
         recipeAdapter = new RecipeAdapter(new ArrayList<>(), recipe -> {
             Intent it = new Intent(MainActivity.this, RecipeDetailActivity.class);
             it.putExtra("recipe_id", recipe.getId());
@@ -124,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
             return false;
         });
         bottomNavigationView.setSelectedItemId(R.id.nav_home);
+        renderRecipes(homeRecommend, "为你推荐");
 
         btnSearch.setOnClickListener(v -> {
             String keyword = etSearch.getText().toString().trim();
@@ -168,6 +196,23 @@ public class MainActivity extends AppCompatActivity {
     private void refreshMineInfo() {
         String username = UserRepository.currentUsername(this, userId);
         tvCurrentUser.setText("当前用户：" + (username == null ? "-" : username));
+        btnQuickLowFat.setOnClickListener(v -> {
+            List<Recipe> out = new ArrayList<>();
+            for (Recipe recipe : allRecipes) {
+                if (recipe.getCalorie() <= 400) out.add(recipe);
+            }
+            renderRecipes(out, "低脂优先（≤400 kcal）");
+        });
+
+        btnQuickFast.setOnClickListener(v -> {
+            List<Recipe> out = new ArrayList<>();
+            for (Recipe recipe : allRecipes) {
+                if (recipe.getMinutes() <= 20) out.add(recipe);
+            }
+            renderRecipes(out, "快手优先（≤20 分钟）");
+        });
+
+        btnResetList.setOnClickListener(v -> renderRecipes(homeRecommend, "为你推荐"));
     }
 
     private void renderRecipes(List<Recipe> list, String sectionTitle) {
