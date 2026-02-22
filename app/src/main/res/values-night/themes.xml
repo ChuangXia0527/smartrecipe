@@ -5,4 +5,5 @@
         <item name="colorPrimaryContainer">@color/colorPrimaryContainer</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
+    <style name="Theme.Smartrecipe" parent="Base.Theme.Smartrecipe" />
 </resources>
