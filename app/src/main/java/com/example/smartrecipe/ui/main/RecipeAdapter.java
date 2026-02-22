@@ -39,6 +39,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         holder.meta.setText("⏱ " + recipe.getMinutes() + " 分钟 · 🔥 " + recipe.getCalorie() + " kcal");
         holder.tags.setText("标签：" + joinList(recipe.getTags()));
         holder.image.setImageResource(RecipeImageResolver.resolveImageRes(holder.itemView.getContext(), recipe));
+        holder.image.setBackgroundResource(RecipeImageResolver.resolveBackgroundRes(recipe));
+        holder.emoji.setText(RecipeImageResolver.resolveEmoji(recipe));
 
         holder.itemView.setOnClickListener(v -> listener.onItemClick(recipe));
     }
@@ -70,6 +72,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     static class RecipeViewHolder extends RecyclerView.ViewHolder {
 
         ImageView image;
+        TextView emoji;
         TextView name;
         TextView meta;
         TextView tags;
@@ -77,6 +80,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         public RecipeViewHolder(View itemView) {
             super(itemView);
             image = itemView.findViewById(R.id.ivRecipeImage);
+            emoji = itemView.findViewById(R.id.tvRecipeEmoji);
             name = itemView.findViewById(R.id.tvRecipeName);
             meta = itemView.findViewById(R.id.tvRecipeMeta);
             tags = itemView.findViewById(R.id.tvRecipeTags);

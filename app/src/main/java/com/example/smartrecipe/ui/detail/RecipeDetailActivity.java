@@ -12,6 +12,7 @@ import com.example.smartrecipe.R;
 import com.example.smartrecipe.data.entity.Recipe;
 import com.example.smartrecipe.data.repository.RecipeRepository;
 import com.example.smartrecipe.data.session.SessionManager;
+import com.example.smartrecipe.ui.common.RecipeImageResolver;
 import com.example.smartrecipe.data.user.UserRepository;
 import com.example.smartrecipe.ui.common.RecipeImageResolver;
 
@@ -20,6 +21,7 @@ import java.util.List;
 public class RecipeDetailActivity extends AppCompatActivity {
 
     private TextView tvTitle, tvMeta, tvTags, tvIngredients, tvSteps;
+    private TextView tvTitle, tvMeta, tvTags, tvIngredients, tvSteps, tvRecipeCoverEmoji;
     private ImageView ivRecipeCover;
     private Button btnFavorite;
     private Recipe recipe;
@@ -36,6 +38,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
         tvIngredients = findViewById(R.id.tvIngredients);
         tvSteps = findViewById(R.id.tvSteps);
         ivRecipeCover = findViewById(R.id.ivRecipeCover);
+        tvRecipeCoverEmoji = findViewById(R.id.tvRecipeCoverEmoji);
         btnFavorite = findViewById(R.id.btnFavoriteToggle);
 
         userId = SessionManager.currentUserId(this);
@@ -56,6 +59,8 @@ public class RecipeDetailActivity extends AppCompatActivity {
         tvIngredients.setText(joinWithComma(recipe.getIngredients()));
         tvSteps.setText(formatSteps(recipe.getSteps()));
         ivRecipeCover.setImageResource(RecipeImageResolver.resolveImageRes(this, recipe));
+        ivRecipeCover.setBackgroundResource(RecipeImageResolver.resolveBackgroundRes(recipe));
+        tvRecipeCoverEmoji.setText(RecipeImageResolver.resolveEmoji(recipe));
 
         refreshFavoriteState();
         btnFavorite.setOnClickListener(v -> toggleFavorite());
