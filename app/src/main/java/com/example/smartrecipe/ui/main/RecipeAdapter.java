@@ -5,12 +5,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smartrecipe.R;
 import com.example.smartrecipe.data.entity.Recipe;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
@@ -34,14 +34,30 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     public void onBindViewHolder(RecipeViewHolder holder, int position) {
         Recipe recipe = recipes.get(position);
         holder.name.setText(recipe.getName());
+        holder.meta.setText("⏱ " + recipe.getMinutes() + " 分钟 · 🔥 " + recipe.getCalorie() + " kcal");
+        holder.tags.setText("标签：" + joinList(recipe.getTags()));
 
-        // 设置点击事件
         holder.itemView.setOnClickListener(v -> listener.onItemClick(recipe));
     }
 
     @Override
     public int getItemCount() {
         return recipes.size();
+    }
+
+    public void replaceData(List<Recipe> list) {
+        recipes.clear();
+        if (list != null) recipes.addAll(list);
+        notifyDataSetChanged();
+    }
+
+    private String joinList(List<String> list) {
+        if (list == null || list.isEmpty()) return "暂无";
+        List<String> out = new ArrayList<>();
+        for (String item : list) {
+            if (item != null && !item.trim().isEmpty()) out.add(item.trim());
+        }
+        return out.isEmpty() ? "暂无" : String.join("、", out);
     }
 
     public interface OnItemClickListener {
@@ -51,10 +67,14 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     static class RecipeViewHolder extends RecyclerView.ViewHolder {
 
         TextView name;
+        TextView meta;
+        TextView tags;
 
         public RecipeViewHolder(View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.tvRecipeName);
+            meta = itemView.findViewById(R.id.tvRecipeMeta);
+            tags = itemView.findViewById(R.id.tvRecipeTags);
         }
     }
 }

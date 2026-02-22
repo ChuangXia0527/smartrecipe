@@ -7,10 +7,24 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
+        android:paddingLeft="16dp"
+        android:paddingTop="14dp"
+        android:paddingRight="16dp"
         android:text="智能食谱推荐"
-        android:textSize="20sp"
+        android:textSize="22sp"
         android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvHomeHint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="16dp"
+        android:paddingTop="2dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="10dp"
+        android:text="结合你的偏好、收藏与历史行为生成推荐"
+        android:textColor="#666666"
+        android:textSize="13sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -33,6 +47,44 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:text="搜索" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="8dp">
+
+        <Button
+            android:id="@+id/btnQuickLowFat"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="低脂优先" />
+
+        <View
+            android:layout_width="8dp"
+            android:layout_height="1dp" />
+
+        <Button
+            android:id="@+id/btnQuickFast"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="快手优先" />
+
+        <View
+            android:layout_width="8dp"
+            android:layout_height="1dp" />
+
+        <Button
+            android:id="@+id/btnResetList"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="恢复推荐" />
     </LinearLayout>
 
     <LinearLayout
@@ -101,6 +153,27 @@
             android:layout_weight="1"
             android:text="退出" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvSectionTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="6dp"
+        android:text="推荐结果"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="6dp"
+        android:text="暂无结果，可尝试更换关键词"
+        android:textColor="#777777"
+        android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvRecipes"
