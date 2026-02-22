@@ -40,30 +40,24 @@ public class RecognizeResultActivity extends AppCompatActivity {
         ArrayList<String> ingredients = getIntent().getStringArrayListExtra("ingredients");
         if (ingredients == null) ingredients = new ArrayList<>();
 
-        // 保证列表是可变的
         ArrayList<String> mutableIngredients = new ArrayList<>(ingredients);
 
-        // 1) 勾选食材列表
         rvIngredients.setLayoutManager(new LinearLayoutManager(this));
         ingAdapter = new IngredientCheckAdapter(mutableIngredients);
         rvIngredients.setAdapter(ingAdapter);
 
-        // 2) 推荐列表
         rvRecommend.setLayoutManager(new LinearLayoutManager(this));
         recipeAdapter = new RecipeAdapter(showRecipes, recipe -> {
             Intent it = new Intent(RecognizeResultActivity.this, RecipeDetailActivity.class);
-            it.putExtra("recipe_id", recipe.getId()); // 确保 Recipe 类有 id
+            it.putExtra("recipe_id", recipe.getId());
             startActivity(it);
         });
         rvRecommend.setAdapter(recipeAdapter);
 
-        // 3) 生成推荐
         btnGenerate.setOnClickListener(v -> generateRecommend());
     }
 
-    // 生成推荐结果
     private void generateRecommend() {
-        // 获取用户选择的食材
         Set<String> selected = ingAdapter.getSelected();
         if (selected == null || selected.isEmpty()) {
             Toast.makeText(this, "请至少选择一种食材", Toast.LENGTH_SHORT).show();
@@ -72,32 +66,41 @@ public class RecognizeResultActivity extends AppCompatActivity {
 
         tvSelected.setText("已选择：" + String.join("、", selected));
 
-        // 使用 RecipeRepository 来获取所有的食谱
         List<Recipe> allRecipes = RecipeRepository.getAllRecipes(this);
-        List<Recipe> matchedRecipes = new ArrayList<>();
+        List<RankedRecipe> matchedRecipes = new ArrayList<>();
 
-        // 遍历所有食谱，查找包含用户选择食材的食谱
         for (Recipe recipe : allRecipes) {
-            boolean isMatch = true;
+            if (recipe.getIngredients() == null || recipe.getIngredients().isEmpty()) continue;
+            int hit = 0;
             for (String ingredient : selected) {
-                if (!recipe.getIngredients().contains(ingredient)) {
-                    isMatch = false;
-                    break;
-                }
+                if (recipe.getIngredients().contains(ingredient)) hit++;
             }
-            if (isMatch) {
-                matchedRecipes.add(recipe);
+            if (hit > 0) {
+                int score = hit * 10 + Math.max(0, 30 - recipe.getMinutes());
+                matchedRecipes.add(new RankedRecipe(recipe, score));
             }
         }
 
-        // 如果没有找到匹配的食谱，给用户提示
-        if (matchedRecipes.isEmpty()) {
-            Toast.makeText(this, "没有匹配到推荐结果，请尝试添加更多食材", Toast.LENGTH_SHORT).show();
-        }
+        matchedRecipes.sort((a, b) -> Integer.compare(b.score, a.score));
 
-        // 显示匹配的食谱
         showRecipes.clear();
-        showRecipes.addAll(matchedRecipes);
+        for (RankedRecipe rankedRecipe : matchedRecipes) {
+            showRecipes.add(rankedRecipe.recipe);
+        }
         recipeAdapter.notifyDataSetChanged();
+
+        if (showRecipes.isEmpty()) {
+            Toast.makeText(this, "没有匹配到推荐结果，请尝试更换食材组合", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private static class RankedRecipe {
+        Recipe recipe;
+        int score;
+
+        RankedRecipe(Recipe recipe, int score) {
+            this.recipe = recipe;
+            this.score = score;
+        }
     }
 }

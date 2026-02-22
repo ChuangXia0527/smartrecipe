@@ -30,6 +30,22 @@ public class UserRepository {
         return account.password.equals(password) ? account : null;
     }
 
+    public static String currentUsername(Context context, long userId) {
+        UserAccount account = AppDatabase.get(context).userAccountDao().findById(userId);
+        return account == null ? null : account.username;
+    }
+
+    public static boolean updateUserCredentials(Context context, long userId, String newUsername, String newPassword) {
+        AppDatabase db = AppDatabase.get(context);
+        UserAccount account = db.userAccountDao().findById(userId);
+        if (account == null) return false;
+
+        UserAccount sameName = db.userAccountDao().findByUsername(newUsername);
+        if (sameName != null && sameName.id != userId) return false;
+
+        return db.userAccountDao().updateCredentials(userId, newUsername, newPassword) > 0;
+    }
+
     public static void savePreference(Context context, long userId, String taste, String allergies, String dietType, String commonIngredients) {
         AppDatabase.get(context).userPreferenceDao().upsert(
                 new UserPreference(userId, taste, allergies, dietType, commonIngredients)

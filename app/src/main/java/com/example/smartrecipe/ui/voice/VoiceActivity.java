@@ -38,7 +38,7 @@ public class VoiceActivity extends AppCompatActivity {
 
     private static final String TAG_VOICE_TRACK = "VoiceTrack";
 
-    private TextView tvResultText, tvParsed;
+    private TextView tvResultText, tvParsed, tvNoVoiceResult;
     private RecyclerView rvRecommend;
     private RecipeAdapter adapter;
     private final List<Recipe> showList = new ArrayList<>();
@@ -88,6 +88,7 @@ public class VoiceActivity extends AppCompatActivity {
 
         tvResultText = findViewById(R.id.tvResultText);
         tvParsed = findViewById(R.id.tvParsed);
+        tvNoVoiceResult = findViewById(R.id.tvNoVoiceResult);
         rvRecommend = findViewById(R.id.rvRecommend);
 
         rvRecommend.setLayoutManager(new LinearLayoutManager(this));
@@ -187,7 +188,9 @@ public class VoiceActivity extends AppCompatActivity {
         showList.addAll(rec);
         adapter.notifyDataSetChanged();
 
-        if (rec.isEmpty()) {
+        boolean empty = rec.isEmpty();
+        tvNoVoiceResult.setVisibility(empty ? TextView.VISIBLE : TextView.GONE);
+        if (empty) {
             Toast.makeText(this, "没有匹配到推荐结果（试试换个说法）", Toast.LENGTH_SHORT).show();
         }
     }
