@@ -53,6 +53,28 @@
                     android:textColor="@color/accent"
                     android:textSize="13sp" />
 
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    android:layout_marginTop="12dp">
+
+                    <ImageView
+                        android:id="@+id/ivRecipeCover"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/recipe_img_default"
+                        android:contentDescription="菜品图片"
+                        android:scaleType="centerCrop" />
+
+                    <TextView
+                        android:id="@+id/tvRecipeCoverEmoji"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="🍽️"
+                        android:textSize="52sp" />
+                </FrameLayout>
+
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnFavoriteToggle"
                     android:layout_width="wrap_content"

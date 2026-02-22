@@ -2,6 +2,7 @@ package com.example.smartrecipe.ui.detail;
 
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -11,13 +12,15 @@ import com.example.smartrecipe.R;
 import com.example.smartrecipe.data.entity.Recipe;
 import com.example.smartrecipe.data.repository.RecipeRepository;
 import com.example.smartrecipe.data.session.SessionManager;
+import com.example.smartrecipe.ui.common.RecipeImageResolver;
 import com.example.smartrecipe.data.user.UserRepository;
 
 import java.util.List;
 
 public class RecipeDetailActivity extends AppCompatActivity {
 
-    private TextView tvTitle, tvMeta, tvTags, tvIngredients, tvSteps;
+    private TextView tvTitle, tvMeta, tvTags, tvIngredients, tvSteps, tvRecipeCoverEmoji;
+    private ImageView ivRecipeCover;
     private Button btnFavorite;
     private Recipe recipe;
     private long userId;
@@ -32,6 +35,8 @@ public class RecipeDetailActivity extends AppCompatActivity {
         tvTags = findViewById(R.id.tvTags);
         tvIngredients = findViewById(R.id.tvIngredients);
         tvSteps = findViewById(R.id.tvSteps);
+        ivRecipeCover = findViewById(R.id.ivRecipeCover);
+        tvRecipeCoverEmoji = findViewById(R.id.tvRecipeCoverEmoji);
         btnFavorite = findViewById(R.id.btnFavoriteToggle);
 
         userId = SessionManager.currentUserId(this);
@@ -51,6 +56,8 @@ public class RecipeDetailActivity extends AppCompatActivity {
         tvTags.setText("标签：" + joinWithSlash(recipe.getTags()));
         tvIngredients.setText(joinWithComma(recipe.getIngredients()));
         tvSteps.setText(formatSteps(recipe.getSteps()));
+        ivRecipeCover.setBackgroundResource(RecipeImageResolver.resolveBackgroundRes(recipe));
+        tvRecipeCoverEmoji.setText(RecipeImageResolver.resolveEmoji(recipe));
 
         refreshFavoriteState();
         btnFavorite.setOnClickListener(v -> toggleFavorite());
