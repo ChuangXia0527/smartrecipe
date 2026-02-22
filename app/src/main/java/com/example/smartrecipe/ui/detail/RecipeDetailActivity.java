@@ -2,6 +2,7 @@ package com.example.smartrecipe.ui.detail;
 
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -12,12 +13,14 @@ import com.example.smartrecipe.data.entity.Recipe;
 import com.example.smartrecipe.data.repository.RecipeRepository;
 import com.example.smartrecipe.data.session.SessionManager;
 import com.example.smartrecipe.data.user.UserRepository;
+import com.example.smartrecipe.ui.common.RecipeImageResolver;
 
 import java.util.List;
 
 public class RecipeDetailActivity extends AppCompatActivity {
 
     private TextView tvTitle, tvMeta, tvTags, tvIngredients, tvSteps;
+    private ImageView ivRecipeCover;
     private Button btnFavorite;
     private Recipe recipe;
     private long userId;
@@ -32,6 +35,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
         tvTags = findViewById(R.id.tvTags);
         tvIngredients = findViewById(R.id.tvIngredients);
         tvSteps = findViewById(R.id.tvSteps);
+        ivRecipeCover = findViewById(R.id.ivRecipeCover);
         btnFavorite = findViewById(R.id.btnFavoriteToggle);
 
         userId = SessionManager.currentUserId(this);
@@ -51,6 +55,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
         tvTags.setText("标签：" + joinWithSlash(recipe.getTags()));
         tvIngredients.setText(joinWithComma(recipe.getIngredients()));
         tvSteps.setText(formatSteps(recipe.getSteps()));
+        ivRecipeCover.setImageResource(RecipeImageResolver.resolveImageRes(this, recipe));
 
         refreshFavoriteState();
         btnFavorite.setOnClickListener(v -> toggleFavorite());
