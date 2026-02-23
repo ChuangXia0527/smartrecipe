@@ -19,4 +19,10 @@ public interface UserAccountDao {
 
     @Query("UPDATE user_account SET username = :username, password = :password WHERE id = :id")
     int updateCredentials(long id, String username, String password);
+
+    @Query("UPDATE user_account SET username = :username WHERE id = :id")
+    int updateUsername(long id, String username);
+
+    @Query("UPDATE user_account SET password = :password WHERE id = :id")
+    int updatePassword(long id, String password);
 }
