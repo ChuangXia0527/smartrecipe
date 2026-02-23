@@ -34,7 +34,7 @@ public class XfIatRecognizer {
     }
 
     // 使用讯飞 REST 语音听写接口（与 X-Appid / X-CurTime / X-Param / X-CheckSum 配套）
-    private static final String IAT_URL = "https://api.xfyun.cn/v1/service/v1/iat";
+    private static final String IAT_URL = "wss://iat-api.xfyun.cn/v2/iat";
 
     private final OkHttpClient client = new OkHttpClient();
     private final ExecutorService executor = Executors.newSingleThreadExecutor();

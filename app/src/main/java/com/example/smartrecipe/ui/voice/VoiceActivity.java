@@ -32,9 +32,9 @@ import com.example.smartrecipe.recommend.RecommendEngine;
 import com.example.smartrecipe.ui.detail.RecipeDetailActivity;
 import com.example.smartrecipe.ui.main.RecipeAdapter;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -53,9 +53,15 @@ public class VoiceActivity extends AppCompatActivity {
 
     private EditText etText;
     private Button btnStartVoice;
-    private final XfIatRecognizer xfIatRecognizer = new XfIatRecognizer();
+
+    // ✅ v2 WebSocket 识别器
+    private final XfIatV2Recognizer xfIatV2Recognizer = new XfIatV2Recognizer();
+
     private final ExecutorService audioExecutor = Executors.newSingleThreadExecutor();
     private final AtomicBoolean isRecognizing = new AtomicBoolean(false);
+
+    // 防止重复触发推荐/收尾
+    private final AtomicBoolean finishedOnce = new AtomicBoolean(false);
 
     // 申请录音权限
     private final ActivityResultLauncher<String> requestAudioPermission =
@@ -100,7 +106,7 @@ public class VoiceActivity extends AppCompatActivity {
             }
         });
 
-        // 文本推荐按钮：兜底方案，保证演示稳定
+        // 文本推荐按钮：兜底方案
         btnTextRecommend.setOnClickListener(v -> {
             String text = etText.getText() == null ? "" : etText.getText().toString().trim();
             if (text.isEmpty()) {
@@ -117,60 +123,82 @@ public class VoiceActivity extends AppCompatActivity {
             return;
         }
 
+        finishedOnce.set(false);
         btnStartVoice.setEnabled(false);
         btnStartVoice.setText("录音中...");
         Toast.makeText(this, "开始录音（5秒）...", Toast.LENGTH_SHORT).show();
 
-        audioExecutor.execute(() -> {
-            byte[] pcmData = recordPcmData();
-            if (pcmData == null || pcmData.length == 0) {
-                runOnUiThread(() -> {
-                    trackVoiceEvent("recognition_failure", "record_empty_data");
-                    Toast.makeText(this, "录音失败，请改用文本输入", Toast.LENGTH_SHORT).show();
-                    fallbackToTextInput();
-                    finishRecognizingUi();
-                });
-                return;
+        // 1) 建立 WebSocket（v2）
+        xfIatV2Recognizer.start(new XfIatV2Recognizer.Callback() {
+            @Override
+            public void onPartialResult(String text) {
+                runOnUiThread(() -> tvResultText.setText("识别结果：" + text));
             }
 
-            xfIatRecognizer.recognize(pcmData, new XfIatRecognizer.Callback() {
-                @Override
-                public void onSuccess(String text) {
-                    runOnUiThread(() -> {
-                        finishRecognizingUi();
-                        if (text == null || text.trim().isEmpty()) {
-                            trackVoiceEvent("empty_result", "iflytek_result_empty");
-                            Toast.makeText(VoiceActivity.this, "识别结果为空，请改用文本输入", Toast.LENGTH_SHORT).show();
-                            fallbackToTextInput();
-                            return;
-                        }
-                        runRecommendWithText(text.trim());
-                    });
-                }
+            @Override
+            public void onFinalResult(String finalText) {
+                if (!finishedOnce.compareAndSet(false, true)) return;
 
-                @Override
-                public void onError(String message) {
-                    runOnUiThread(() -> {
-                        finishRecognizingUi();
-                        trackVoiceEvent("recognition_failure", message);
-                        Toast.makeText(VoiceActivity.this, message, Toast.LENGTH_LONG).show();
+                runOnUiThread(() -> {
+                    finishRecognizingUi();
+
+                    String text = finalText == null ? "" : finalText.trim();
+                    if (text.isEmpty()) {
+                        trackVoiceEvent("empty_result", "iflytek_final_empty");
+                        Toast.makeText(VoiceActivity.this, "识别结果为空，请改用文本输入", Toast.LENGTH_SHORT).show();
                         fallbackToTextInput();
-                    });
-                }
-            });
+                        return;
+                    }
+                    runRecommendWithText(text);
+                });
+            }
+
+            @Override
+            public void onError(String message) {
+                if (!finishedOnce.compareAndSet(false, true)) return;
+
+                runOnUiThread(() -> {
+                    finishRecognizingUi();
+                    trackVoiceEvent("recognition_failure", message);
+                    Toast.makeText(VoiceActivity.this, message, Toast.LENGTH_LONG).show();
+                    fallbackToTextInput();
+                });
+            }
+        });
+
+        // 2) 录音并分片发送（status 0/1/2）
+        audioExecutor.execute(() -> {
+            boolean ok = recordAndStreamToXfV2(RECORD_SECONDS);
+
+            if (!ok) {
+                if (!finishedOnce.compareAndSet(false, true)) return;
+                runOnUiThread(() -> {
+                    finishRecognizingUi();
+                    trackVoiceEvent("recognition_failure", "record_stream_failed");
+                    Toast.makeText(this, "录音/发送失败，请改用文本输入", Toast.LENGTH_SHORT).show();
+                    fallbackToTextInput();
+                });
+            }
         });
     }
 
-    private byte[] recordPcmData() {
+    /**
+     * 录音并流式发送到讯飞 v2。
+     * 录满 seconds 秒后发送 status=2 结束帧。
+     */
+    private boolean recordAndStreamToXfV2(int seconds) {
         int channelConfig = AudioFormat.CHANNEL_IN_MONO;
         int audioFormat = AudioFormat.ENCODING_PCM_16BIT;
 
         int minBuffer = AudioRecord.getMinBufferSize(SAMPLE_RATE, channelConfig, audioFormat);
         if (minBuffer == AudioRecord.ERROR || minBuffer == AudioRecord.ERROR_BAD_VALUE) {
-            return null;
+            return false;
         }
 
-        int bufferSize = Math.max(minBuffer, SAMPLE_RATE);
+        // 40ms 每帧：16000Hz * 2bytes * 0.04 = 1280 bytes
+        int frameSize = 1280;
+        int bufferSize = Math.max(minBuffer, frameSize * 4);
+
         AudioRecord audioRecord;
         try {
             audioRecord = new AudioRecord(
@@ -181,37 +209,49 @@ public class VoiceActivity extends AppCompatActivity {
                     bufferSize
             );
         } catch (SecurityException e) {
-            return null;
+            return false;
         }
 
         if (audioRecord.getState() != AudioRecord.STATE_INITIALIZED) {
             audioRecord.release();
-            return null;
+            return false;
         }
 
-        byte[] buffer = new byte[bufferSize];
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        byte[] frameBuf = new byte[frameSize];
 
         try {
             audioRecord.startRecording();
-            long endAt = System.currentTimeMillis() + RECORD_SECONDS * 1000L;
+
+            long endAt = System.currentTimeMillis() + seconds * 1000L;
+            boolean first = true;
+
             while (System.currentTimeMillis() < endAt) {
-                int read = audioRecord.read(buffer, 0, buffer.length);
+                int read = audioRecord.read(frameBuf, 0, frameBuf.length);
                 if (read > 0) {
-                    output.write(buffer, 0, read);
+                    byte[] frame = new byte[read];
+                    System.arraycopy(frameBuf, 0, frame, 0, read);
+
+                    if (first) {
+                        xfIatV2Recognizer.sendAudioFrame(frame, 0); // 第一帧
+                        first = false;
+                    } else {
+                        xfIatV2Recognizer.sendAudioFrame(frame, 1); // 中间帧
+                    }
                 }
             }
+
+            // 最后一帧：结束
+            xfIatV2Recognizer.sendAudioFrame(new byte[0], 2);
+            return true;
+
         } catch (Exception e) {
-            return null;
+            return false;
         } finally {
             try {
                 audioRecord.stop();
-            } catch (Exception ignore) {
-                // ignore
-            }
+            } catch (Exception ignore) {}
             audioRecord.release();
         }
-        return output.toByteArray();
     }
 
     private void finishRecognizingUi() {
@@ -243,6 +283,77 @@ public class VoiceActivity extends AppCompatActivity {
         Log.i(TAG_VOICE_TRACK, "event=" + event + ", detail=" + detail);
     }
 
+    // ========================= 关键：硬过滤（强约束） =========================
+
+    /** 把 List<String> 拼成一个可 contains 的字符串（用空格连接） */
+    private String joinList(List<String> list) {
+        if (list == null || list.isEmpty()) return "";
+        StringBuilder sb = new StringBuilder();
+        for (String s : list) {
+            if (s == null) continue;
+            String t = s.trim();
+            if (t.isEmpty()) continue;
+            if (sb.length() > 0) sb.append(' ');
+            sb.append(t);
+        }
+        return sb.toString();
+    }
+
+    /** 把 recipe 的 name + ingredients + tags 合成一个可检索文本 */
+    private String recipeToSearchText(Recipe r) {
+        String name = r.getName() == null ? "" : r.getName();
+        String ingredientsText = joinList(r.getIngredients());
+        String tagsText = joinList(r.getTags());
+        return (name + " " + ingredientsText + " " + tagsText).toLowerCase(Locale.ROOT);
+    }
+
+    /**
+     * 强制过滤策略：
+     * - 避免食材 avoidIngredients：命中任意一个就剔除
+     * - 想要食材 needIngredients：如果非空，则至少命中一个才保留
+     *
+     * 匹配位置：菜名/食材/标签（合并文本 contains）
+     */
+    private List<Recipe> hardFilterByIntent(List<Recipe> all, VoiceIntent intent) {
+        List<Recipe> out = new ArrayList<>();
+
+        for (Recipe r : all) {
+            String haystack = recipeToSearchText(r);
+
+            // 1) 避免：命中就剔除
+            boolean hitAvoid = false;
+            if (intent.avoidIngredients != null) {
+                for (String a : intent.avoidIngredients) {
+                    if (a == null) continue;
+                    String key = a.trim().toLowerCase(Locale.ROOT);
+                    if (!key.isEmpty() && haystack.contains(key)) {
+                        hitAvoid = true;
+                        break;
+                    }
+                }
+            }
+            if (hitAvoid) continue;
+
+            // 2) 想要：至少命中一个才保留
+            if (intent.needIngredients != null && !intent.needIngredients.isEmpty()) {
+                boolean hitNeed = false;
+                for (String w : intent.needIngredients) {
+                    if (w == null) continue;
+                    String key = w.trim().toLowerCase(Locale.ROOT);
+                    if (!key.isEmpty() && haystack.contains(key)) {
+                        hitNeed = true;
+                        break;
+                    }
+                }
+                if (!hitNeed) continue;
+            }
+
+            out.add(r);
+        }
+
+        return out;
+    }
+
     /**
      * 无论语音还是文本，统一走这个推荐流程
      */
@@ -253,7 +364,10 @@ public class VoiceActivity extends AppCompatActivity {
         tvParsed.setText("解析结果：\n" + intent.toReadable());
 
         List<Recipe> all = RecipeRepository.getAllRecipes(this);
-        List<Recipe> rec = RecommendEngine.recommendByVoiceIntent(all, intent, 10);
+
+        // ✅ 先硬过滤（想要/不要）再排序推荐
+        List<Recipe> filtered = hardFilterByIntent(all, intent);
+        List<Recipe> rec = RecommendEngine.recommendByVoiceIntent(filtered, intent, 10);
 
         showList.clear();
         showList.addAll(rec);
