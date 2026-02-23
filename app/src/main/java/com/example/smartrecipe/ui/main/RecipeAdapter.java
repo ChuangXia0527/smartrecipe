@@ -36,8 +36,10 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     public void onBindViewHolder(RecipeViewHolder holder, int position) {
         Recipe recipe = recipes.get(position);
         holder.name.setText(recipe.getName());
-        holder.meta.setText("⏱ " + recipe.getMinutes() + " 分钟 · 🔥 " + recipe.getCalorie() + " kcal");
+        holder.meta.setText("🕒 " + recipe.getMinutes() + " min   🔥 " + recipe.getCalorie() + " kcal");
         holder.tags.setText("标签：" + joinList(recipe.getTags()));
+        holder.author.setText("By SmartRecipe");
+        holder.rating.setText("⭐ " + formatRating(recipe));
         holder.image.setImageResource(RecipeImageResolver.resolveImageRes(holder.itemView.getContext(), recipe));
         holder.image.setBackgroundResource(RecipeImageResolver.resolveBackgroundRes(recipe));
 
@@ -65,6 +67,11 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         return out.isEmpty() ? "暂无" : String.join("、", out);
     }
 
+
+    private String formatRating(Recipe recipe) {
+        double rating = 4.0 + ((recipe.getId() % 10) / 10.0);
+        return String.format(java.util.Locale.US, "%.1f", rating);
+    }
     public interface OnItemClickListener {
         void onItemClick(Recipe recipe);
     }
@@ -72,17 +79,20 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     static class RecipeViewHolder extends RecyclerView.ViewHolder {
 
         ImageView image;
-        TextView emoji;
         TextView name;
+        TextView author;
         TextView meta;
         TextView tags;
+        TextView rating;
 
         public RecipeViewHolder(View itemView) {
             super(itemView);
             image = itemView.findViewById(R.id.ivRecipeImage);
             name = itemView.findViewById(R.id.tvRecipeName);
+            author = itemView.findViewById(R.id.tvRecipeAuthor);
             meta = itemView.findViewById(R.id.tvRecipeMeta);
             tags = itemView.findViewById(R.id.tvRecipeTags);
+            rating = itemView.findViewById(R.id.tvRecipeRating);
         }
     }
 }

@@ -15,75 +15,99 @@
             android:id="@+id/sectionHome"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingLeft="18dp"
+            android:paddingTop="20dp"
+            android:paddingRight="18dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="发现美食 🔎"
+                android:textColor="@color/textPrimary"
+                android:textSize="34sp"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="14dp"
+                android:background="@drawable/bg_search_shell"
+                android:gravity="center_vertical"
+                android:paddingLeft="14dp"
+                android:paddingRight="8dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@android:drawable/ic_menu_search"
+                    app:tint="@color/textMuted" />
+
+                <EditText
+                    android:id="@+id/etSearch"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:gravity="center_vertical"
+                    android:hint="搜索食谱、食材..."
+                    android:textColor="@color/textPrimary"
+                    android:textColorHint="@color/textMuted" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSearch"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="☰"
+                    android:textColor="@color/textSecondary"
+                    android:textSize="16sp"
+                    app:backgroundTint="@android:color/transparent"
+                    app:cornerRadius="12dp"
+                    app:strokeColor="#13000000"
+                    app:strokeWidth="1dp" />
+            </LinearLayout>
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_home_header"
-                android:orientation="vertical"
-                android:paddingLeft="20dp"
-                android:paddingTop="22dp"
-                android:paddingRight="20dp"
-                android:paddingBottom="18dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="SmartRecipe"
-                    android:textColor="@android:color/white"
-                    android:textSize="26sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="今天吃什么？探索专属于你的美味灵感"
-                    android:textColor="#E6FFFFFF"
-                    android:textSize="14sp" />
+                android:layout_marginTop="12dp"
+                android:scrollbars="none">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:background="@drawable/bg_search_box"
-                    android:elevation="2dp"
-                    android:orientation="horizontal"
-                    android:padding="6dp">
+                    android:orientation="horizontal">
 
-                    <EditText
-                        android:id="@+id/etSearch"
-                        android:layout_width="0dp"
-                        android:layout_height="44dp"
-                        android:layout_weight="1"
-                        android:background="@android:color/transparent"
-                        android:hint="搜索菜名 / 标签 / 食材"
-                        android:paddingLeft="12dp"
-                        android:paddingRight="8dp"
-                        android:textColor="@color/textPrimary"
-                        android:textColorHint="@color/textSecondary" />
+                    <TextView
+                        style="@style/Widget.SmartRecipe.CategoryChip.Active"
+                        android:text="推荐" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnSearch"
-                        android:layout_width="wrap_content"
-                        android:layout_height="44dp"
-                        android:insetTop="0dp"
-                        android:insetBottom="0dp"
-                        android:text="搜索"
-                        android:textSize="14sp"
-                        app:backgroundTint="@color/accent"
-                        app:cornerRadius="12dp" />
+                    <TextView
+                        style="@style/Widget.SmartRecipe.CategoryChip"
+                        android:text="早餐" />
+
+                    <TextView
+                        style="@style/Widget.SmartRecipe.CategoryChip"
+                        android:text="午餐" />
+
+                    <TextView
+                        style="@style/Widget.SmartRecipe.CategoryChip"
+                        android:text="晚餐" />
+
+                    <TextView
+                        style="@style/Widget.SmartRecipe.CategoryChip"
+                        android:text="甜点" />
                 </LinearLayout>
-            </LinearLayout>
+            </HorizontalScrollView>
 
             <TextView
                 android:id="@+id/tvSectionTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
+                android:layout_marginTop="10dp"
                 android:text="推荐食谱"
                 android:textColor="@color/textPrimary"
                 android:textSize="18sp"
@@ -93,9 +117,7 @@
                 android:id="@+id/tvEmpty"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="20dp"
-                android:paddingTop="6dp"
-                android:paddingRight="20dp"
+                android:paddingTop="4dp"
                 android:paddingBottom="6dp"
                 android:text="暂无结果，可尝试更换关键词"
                 android:textColor="@color/textSecondary"
@@ -121,46 +143,91 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="20dp">
+                android:padding="18dp">
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="智能功能"
+                    android:text="智能助手 🤖"
                     android:textColor="@color/textPrimary"
-                    android:textSize="24sp"
+                    android:textSize="34sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="让 AI 帮你更快发现可做的菜"
-                    android:textColor="@color/textSecondary" />
+                    android:text="AI 赋能，让烹饪不仅仅是烹饪"
+                    android:textColor="@color/textSecondary"
+                    android:textSize="20sp" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnRecognize"
-                    style="@style/Widget.SmartRecipe.FeatureButton"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnRecognize"
+                        android:layout_width="0dp"
+                        android:layout_height="180dp"
+                        android:layout_weight="1"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:text="拍照识别&#10;识别食材生成食谱"
+                        android:textAllCaps="false"
+                        android:textColor="@android:color/white"
+                        android:textSize="16sp"
+                        app:backgroundTint="@color/accent"
+                        app:cornerRadius="20dp"
+                        app:icon="@android:drawable/ic_menu_camera"
+                        app:iconGravity="textTop"
+                        app:iconPadding="20dp"
+                        app:iconTint="@android:color/white" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnVoice"
+                        android:layout_width="0dp"
+                        android:layout_height="180dp"
+                        android:layout_marginLeft="12dp"
+                        android:layout_weight="1"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:text="语音助手&#10;语音控制烹饪步骤"
+                        android:textAllCaps="false"
+                        android:textColor="@color/textPrimary"
+                        android:textSize="16sp"
+                        app:backgroundTint="@android:color/white"
+                        app:cornerRadius="20dp"
+                        app:elevation="2dp"
+                        app:icon="@android:drawable/ic_btn_speak_now"
+                        app:iconGravity="textTop"
+                        app:iconPadding="20dp"
+                        app:iconTint="#3B82F6"
+                        app:strokeColor="#12000000"
+                        app:strokeWidth="1dp" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="📷 拍照识别" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnVoice"
-                    style="@style/Widget.SmartRecipe.FeatureButton"
-                    android:layout_marginTop="12dp"
-                    android:text="🎙 语音识别" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnPreference"
-                    style="@style/Widget.SmartRecipe.FeatureButton"
-                    android:layout_marginTop="12dp"
-                    android:text="⚙ 偏好设置" />
+                    android:text="实用工具"
+                    android:textColor="@color/textSecondary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnIngredientFilter"
-                    style="@style/Widget.SmartRecipe.FeatureButton"
+                    style="@style/Widget.SmartRecipe.FeatureRowButton"
+                    android:layout_marginTop="10dp"
+                    android:text="食材识别\n快速扫描冰箱里的食材" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnPreference"
+                    style="@style/Widget.SmartRecipe.FeatureRowButton"
                     android:layout_marginTop="12dp"
-                    android:text="🥬 食材筛选" />
+                    android:text="智能筛选\n基于口味、时间、卡路里" />
             </LinearLayout>
         </ScrollView>
 
@@ -175,50 +242,113 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="20dp">
+                android:padding="18dp">
 
-                <TextView
-                    android:id="@+id/tvMineTitle"
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="我的"
-                    android:textColor="@color/textPrimary"
-                    android:textSize="24sp"
+                    app:cardBackgroundColor="@android:color/white"
+                    app:cardCornerRadius="26dp"
+                    app:cardElevation="4dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="18dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="74dp"
+                                android:layout_height="74dp"
+                                android:background="@drawable/bg_avatar"
+                                android:padding="16dp"
+                                android:src="@android:drawable/ic_menu_myplaces"
+                                app:tint="@android:color/white" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="14dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/tvMineTitle"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="美食家小王"
+                                    android:textColor="@color/textPrimary"
+                                    android:textSize="30sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/tvCurrentUser"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:text="当前用户：-"
+                                    android:textColor="@color/textSecondary"
+                                    android:textSize="16sp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:orientation="horizontal"
+                            android:weightSum="4">
+
+                            <TextView style="@style/Widget.SmartRecipe.StatItem" android:text="128\n食谱" />
+                            <TextView style="@style/Widget.SmartRecipe.StatItem" android:text="2.4k\n粉丝" />
+                            <TextView style="@style/Widget.SmartRecipe.StatItem" android:text="356\n关注" />
+                            <TextView style="@style/Widget.SmartRecipe.StatItem" android:text="12k\n获赞" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:text="常用功能"
+                    android:textColor="@color/textSecondary"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tvCurrentUser"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="当前用户：-"
-                    android:textColor="@color/textSecondary" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnProfile"
-                    style="@style/Widget.SmartRecipe.FeatureButton"
-                    android:layout_marginTop="18dp"
-                    android:text="👤 我的信息" />
+                    style="@style/Widget.SmartRecipe.MineRowButton"
+                    android:layout_marginTop="10dp"
+                    android:text="我的信息（个人资料）" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnFavorite"
-                    style="@style/Widget.SmartRecipe.FeatureButton"
-                    android:layout_marginTop="12dp"
-                    android:text="❤️ 收藏" />
+                    style="@style/Widget.SmartRecipe.MineRowButton"
+                    android:layout_marginTop="10dp"
+                    android:text="我的收藏" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnHistory"
-                    style="@style/Widget.SmartRecipe.FeatureButton"
-                    android:layout_marginTop="12dp"
-                    android:text="🕘 历史" />
+                    style="@style/Widget.SmartRecipe.MineRowButton"
+                    android:layout_marginTop="10dp"
+                    android:text="浏览历史" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnLogout"
-                    style="@style/Widget.SmartRecipe.FeatureButton"
-                    android:layout_marginTop="12dp"
+                    style="@style/Widget.SmartRecipe.MineRowButton"
+                    android:layout_marginTop="10dp"
                     android:text="退出登录"
-                    app:backgroundTint="#FEE2E2"
-                    android:textColor="#991B1B" />
+                    android:textColor="#B91C1C"
+                    app:icon="@android:drawable/ic_lock_power_off"
+                    app:iconTint="#B91C1C" />
+
             </LinearLayout>
         </ScrollView>
     </FrameLayout>
@@ -229,6 +359,7 @@
         android:layout_height="wrap_content"
         android:background="@android:color/white"
         app:itemActiveIndicatorStyle="@style/Widget.SmartRecipe.BottomNavActiveIndicator"
+        app:itemIconSize="26dp"
         app:itemIconTint="@color/bottom_nav_tint"
         app:itemTextColor="@color/bottom_nav_tint"
         app:menu="@menu/bottom_nav_menu" />

@@ -10,7 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smartrecipe.data.entity.Recipe;
@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
         // RecyclerView + Adapter（只初始化一次）
         RecyclerView rv = findViewById(R.id.rvRecipes);
-        rv.setLayoutManager(new LinearLayoutManager(this));
+        rv.setLayoutManager(new GridLayoutManager(this, 2));
         recipeAdapter = new RecipeAdapter(new ArrayList<>(), recipe -> {
             Intent it = new Intent(MainActivity.this, RecipeDetailActivity.class);
             it.putExtra("recipe_id", recipe.getId());
