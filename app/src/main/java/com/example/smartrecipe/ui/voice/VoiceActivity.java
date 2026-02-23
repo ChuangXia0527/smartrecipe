@@ -3,18 +3,21 @@ package com.example.smartrecipe.ui.voice;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.AudioFormat;
+import android.media.AudioRecord;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.speech.RecognizerIntent;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,14 +32,19 @@ import com.example.smartrecipe.recommend.RecommendEngine;
 import com.example.smartrecipe.ui.detail.RecipeDetailActivity;
 import com.example.smartrecipe.ui.main.RecipeAdapter;
 
-import android.util.Log;
-
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class VoiceActivity extends AppCompatActivity {
 
     private static final String TAG_VOICE_TRACK = "VoiceTrack";
+
+    private static final int SAMPLE_RATE = 16000;
+    private static final int RECORD_SECONDS = 5;
 
     private TextView tvResultText, tvParsed, tvNoVoiceResult;
     private RecyclerView rvRecommend;
@@ -44,6 +52,10 @@ public class VoiceActivity extends AppCompatActivity {
     private final List<Recipe> showList = new ArrayList<>();
 
     private EditText etText;
+    private Button btnStartVoice;
+    private final XfIatRecognizer xfIatRecognizer = new XfIatRecognizer();
+    private final ExecutorService audioExecutor = Executors.newSingleThreadExecutor();
+    private final AtomicBoolean isRecognizing = new AtomicBoolean(false);
 
     // 申请录音权限
     private final ActivityResultLauncher<String> requestAudioPermission =
@@ -56,33 +68,12 @@ public class VoiceActivity extends AppCompatActivity {
                 }
             });
 
-    // 启动系统语音识别面板并接收结果
-    private final ActivityResultLauncher<Intent> voiceLauncher =
-            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-                if (result.getResultCode() != RESULT_OK || result.getData() == null) {
-                    trackVoiceEvent("recognition_failure", "result_not_ok_or_data_null");
-                    Toast.makeText(this, "未识别到语音，请改用文本输入", Toast.LENGTH_SHORT).show();
-                    fallbackToTextInput();
-                    return;
-                }
-                ArrayList<String> list = result.getData().getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                if (list == null || list.isEmpty()) {
-                    trackVoiceEvent("empty_result", "extra_results_empty");
-                    Toast.makeText(this, "识别结果为空，请改用文本输入", Toast.LENGTH_SHORT).show();
-                    fallbackToTextInput();
-                    return;
-                }
-                String text = list.get(0);
-                // 统一走同一套推荐流程
-                runRecommendWithText(text);
-            });
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_voice);
 
-        Button btnStartVoice = findViewById(R.id.btnStartVoice);
+        btnStartVoice = findViewById(R.id.btnStartVoice);
         Button btnTextRecommend = findViewById(R.id.btnTextRecommend);
         etText = findViewById(R.id.etText);
 
@@ -121,33 +112,113 @@ public class VoiceActivity extends AppCompatActivity {
     }
 
     private void startVoiceInput() {
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-
-        // 强制中文，提高识别成功率
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "zh-CN");
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, "zh-CN");
-        intent.putExtra(RecognizerIntent.EXTRA_ONLY_RETURN_LANGUAGE_PREFERENCE, "zh-CN");
-
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "请说出你的需求，例如：低脂鸡胸肉，不要辣");
-        intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3);
-
-        if (intent.resolveActivity(getPackageManager()) == null) {
-            trackVoiceEvent("recognition_failure", "recognizer_intent_unavailable");
-            Toast.makeText(this, "当前设备不支持语音识别，已切换为文本输入", Toast.LENGTH_SHORT).show();
-            fallbackToTextInput();
+        if (!isRecognizing.compareAndSet(false, true)) {
+            Toast.makeText(this, "正在识别中，请稍候", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        try {
-            voiceLauncher.launch(intent);
-        } catch (Exception e) {
-            trackVoiceEvent("recognition_failure", "launch_exception:" + e.getClass().getSimpleName());
-            Toast.makeText(this, "语音识别启动失败，已切换为文本输入", Toast.LENGTH_SHORT).show();
-            fallbackToTextInput();
-        }
+        btnStartVoice.setEnabled(false);
+        btnStartVoice.setText("录音中...");
+        Toast.makeText(this, "开始录音（5秒）...", Toast.LENGTH_SHORT).show();
+
+        audioExecutor.execute(() -> {
+            byte[] pcmData = recordPcmData();
+            if (pcmData == null || pcmData.length == 0) {
+                runOnUiThread(() -> {
+                    trackVoiceEvent("recognition_failure", "record_empty_data");
+                    Toast.makeText(this, "录音失败，请改用文本输入", Toast.LENGTH_SHORT).show();
+                    fallbackToTextInput();
+                    finishRecognizingUi();
+                });
+                return;
+            }
+
+            xfIatRecognizer.recognize(pcmData, new XfIatRecognizer.Callback() {
+                @Override
+                public void onSuccess(String text) {
+                    runOnUiThread(() -> {
+                        finishRecognizingUi();
+                        if (text == null || text.trim().isEmpty()) {
+                            trackVoiceEvent("empty_result", "iflytek_result_empty");
+                            Toast.makeText(VoiceActivity.this, "识别结果为空，请改用文本输入", Toast.LENGTH_SHORT).show();
+                            fallbackToTextInput();
+                            return;
+                        }
+                        runRecommendWithText(text.trim());
+                    });
+                }
+
+                @Override
+                public void onError(String message) {
+                    runOnUiThread(() -> {
+                        finishRecognizingUi();
+                        trackVoiceEvent("recognition_failure", message);
+                        Toast.makeText(VoiceActivity.this, message, Toast.LENGTH_LONG).show();
+                        fallbackToTextInput();
+                    });
+                }
+            });
+        });
     }
 
+    private byte[] recordPcmData() {
+        int channelConfig = AudioFormat.CHANNEL_IN_MONO;
+        int audioFormat = AudioFormat.ENCODING_PCM_16BIT;
+
+        int minBuffer = AudioRecord.getMinBufferSize(SAMPLE_RATE, channelConfig, audioFormat);
+        if (minBuffer == AudioRecord.ERROR || minBuffer == AudioRecord.ERROR_BAD_VALUE) {
+            return null;
+        }
+
+        int bufferSize = Math.max(minBuffer, SAMPLE_RATE);
+        AudioRecord audioRecord;
+        try {
+            audioRecord = new AudioRecord(
+                    MediaRecorder.AudioSource.MIC,
+                    SAMPLE_RATE,
+                    channelConfig,
+                    audioFormat,
+                    bufferSize
+            );
+        } catch (SecurityException e) {
+            return null;
+        }
+
+        if (audioRecord.getState() != AudioRecord.STATE_INITIALIZED) {
+            audioRecord.release();
+            return null;
+        }
+
+        byte[] buffer = new byte[bufferSize];
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+        try {
+            audioRecord.startRecording();
+            long endAt = System.currentTimeMillis() + RECORD_SECONDS * 1000L;
+            while (System.currentTimeMillis() < endAt) {
+                int read = audioRecord.read(buffer, 0, buffer.length);
+                if (read > 0) {
+                    output.write(buffer, 0, read);
+                }
+            }
+        } catch (Exception e) {
+            return null;
+        } finally {
+            try {
+                audioRecord.stop();
+            } catch (Exception ignore) {
+                // ignore
+            }
+            audioRecord.release();
+        }
+        return output.toByteArray();
+    }
+
+    private void finishRecognizingUi() {
+        isRecognizing.set(false);
+        btnStartVoice.setEnabled(true);
+        btnStartVoice.setText("开始语音输入");
+    }
 
     private void showPermissionDeniedDialog() {
         new AlertDialog.Builder(this)
