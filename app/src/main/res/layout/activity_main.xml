@@ -227,6 +227,7 @@
                     style="@style/Widget.SmartRecipe.FeatureRowButton"
                     android:layout_marginTop="10dp"
                     android:text="食材筛选\n快速筛选所需食材" />
+                    android:text="食材识别\n快速扫描冰箱里的食材" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnPreference"
@@ -293,6 +294,30 @@
                                     android:textSize="30sp"
                                     android:textStyle="bold" />
                             </LinearLayout>
+                        </LinearLayout>
+
+                                <TextView
+                                    android:id="@+id/tvCurrentUser"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:text="当前用户：-"
+                                    android:textColor="@color/textSecondary"
+                                    android:textSize="16sp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:orientation="horizontal"
+                            android:weightSum="4">
+
+                            <TextView style="@style/Widget.SmartRecipe.StatItem" android:text="128\n食谱" />
+                            <TextView style="@style/Widget.SmartRecipe.StatItem" android:text="2.4k\n粉丝" />
+                            <TextView style="@style/Widget.SmartRecipe.StatItem" android:text="356\n关注" />
+                            <TextView style="@style/Widget.SmartRecipe.StatItem" android:text="12k\n获赞" />
                         </LinearLayout>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
