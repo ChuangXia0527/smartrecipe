@@ -9,6 +9,10 @@ import com.example.smartrecipe.BuildConfig;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+<<<<<<< codex/implement-speech-recognition-using-iflytek-api-synm80
+import java.net.URLEncoder;
+=======
+>>>>>>> master
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Locale;
@@ -23,7 +27,10 @@ import okhttp3.Response;
 
 /**
  * 基于讯飞 WebAPI(IAT) 的音频转文字实现。
+<<<<<<< codex/implement-speech-recognition-using-iflytek-api-synm80
+=======
  * 为了便于接入现有页面，当前实现使用「一次录音 -> 一次请求」模式。
+>>>>>>> master
  */
 public class XfIatRecognizer {
 
@@ -33,7 +40,12 @@ public class XfIatRecognizer {
         void onError(String message);
     }
 
+<<<<<<< codex/implement-speech-recognition-using-iflytek-api-synm80
+    // 使用讯飞 REST 语音听写接口（与 X-Appid / X-CurTime / X-Param / X-CheckSum 配套）
+    private static final String IAT_URL = "https://api.xfyun.cn/v1/service/v1/iat";
+=======
     private static final String IAT_URL = "https://iat-api.xfyun.cn/v2/iat";
+>>>>>>> master
 
     private final OkHttpClient client = new OkHttpClient();
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -47,10 +59,13 @@ public class XfIatRecognizer {
             callback.onError("未配置讯飞 apiKey，请在 local.properties 中添加 iflytek.apiKey");
             return;
         }
+<<<<<<< codex/implement-speech-recognition-using-iflytek-api-synm80
+=======
         if (BuildConfig.IFLYTEK_API_SECRET == null || BuildConfig.IFLYTEK_API_SECRET.trim().isEmpty()) {
             callback.onError("未配置讯飞 apiSecret，请在 local.properties 中添加 iflytek.apiSecret");
             return;
         }
+>>>>>>> master
 
         executor.execute(() -> doRecognize(pcm16k, callback));
     }
@@ -60,17 +75,29 @@ public class XfIatRecognizer {
             String curTime = String.valueOf(System.currentTimeMillis() / 1000);
 
             JSONObject param = new JSONObject();
+<<<<<<< codex/implement-speech-recognition-using-iflytek-api-synm80
+            param.put("engine_type", "sms16k");
+            param.put("aue", "raw");
+=======
             JSONObject iat = new JSONObject();
             iat.put("language", "zh_cn");
             iat.put("domain", "iat");
             iat.put("accent", "mandarin");
             param.put("iat", iat);
+>>>>>>> master
 
             String paramBase64 = Base64.encodeToString(param.toString().getBytes(StandardCharsets.UTF_8), Base64.NO_WRAP);
             String checkSum = md5(BuildConfig.IFLYTEK_API_KEY + curTime + paramBase64);
 
+<<<<<<< codex/implement-speech-recognition-using-iflytek-api-synm80
+            String audioBase64 = Base64.encodeToString(pcm16k, Base64.NO_WRAP);
+            String formBody = "audio=" + URLEncoder.encode(audioBase64, "UTF-8");
+            RequestBody body = RequestBody.create(
+                    formBody,
+=======
             RequestBody body = RequestBody.create(
                     Base64.encodeToString(pcm16k, Base64.NO_WRAP),
+>>>>>>> master
                     MediaType.parse("application/x-www-form-urlencoded; charset=utf-8")
             );
 
@@ -84,29 +111,65 @@ public class XfIatRecognizer {
                     .build();
 
             try (Response response = client.newCall(request).execute()) {
+<<<<<<< codex/implement-speech-recognition-using-iflytek-api-synm80
+                String resp = response.body() == null ? "" : response.body().string();
+                if (!response.isSuccessful()) {
+                    callback.onError(buildHttpErrorMessage(response.code(), resp));
+                    return;
+                }
+
+=======
                 if (!response.isSuccessful() || response.body() == null) {
                     callback.onError("讯飞请求失败: HTTP " + response.code());
                     return;
                 }
                 String resp = response.body().string();
+>>>>>>> master
                 JSONObject obj = new JSONObject(resp);
                 String code = obj.optString("code");
                 if (!"0".equals(code)) {
                     callback.onError("讯飞识别失败: " + obj.optString("desc", "未知错误") + " (code=" + code + ")");
                     return;
                 }
+<<<<<<< codex/implement-speech-recognition-using-iflytek-api-synm80
+
+=======
+>>>>>>> master
                 String data = obj.optString("data", "");
                 if (data.isEmpty()) {
                     callback.onError("讯飞返回空识别结果");
                     return;
                 }
+<<<<<<< codex/implement-speech-recognition-using-iflytek-api-synm80
+
+                String parsed = parseResult(data);
+                if (parsed.isEmpty()) {
+                    // 有些返回 data 直接就是识别文本，而不是 JSON 结构
+                    parsed = data.trim();
+                }
+                callback.onSuccess(parsed);
+=======
                 callback.onSuccess(parseResult(data));
+>>>>>>> master
             }
         } catch (Exception e) {
             callback.onError("讯飞识别异常: " + e.getMessage());
         }
     }
 
+<<<<<<< codex/implement-speech-recognition-using-iflytek-api-synm80
+    private String buildHttpErrorMessage(int code, String respBody) {
+        if (code == 403) {
+            return "讯飞请求失败: HTTP 403（请确认接口开通、APPID/APIKey 是否同一应用、以及请求签名参数是否匹配）";
+        }
+        if (respBody != null && !respBody.trim().isEmpty()) {
+            return "讯飞请求失败: HTTP " + code + " - " + respBody;
+        }
+        return "讯飞请求失败: HTTP " + code;
+    }
+
+=======
+>>>>>>> master
     private String parseResult(String data) {
         try {
             JSONObject dataObj = new JSONObject(data);
