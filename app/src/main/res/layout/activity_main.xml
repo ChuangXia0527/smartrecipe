@@ -83,22 +83,27 @@
 
                     <TextView
                         style="@style/Widget.SmartRecipe.CategoryChip.Active"
+                        android:id="@+id/chipRecommend"
                         android:text="推荐" />
 
                     <TextView
                         style="@style/Widget.SmartRecipe.CategoryChip"
+                        android:id="@+id/chipBreakfast"
                         android:text="早餐" />
 
                     <TextView
                         style="@style/Widget.SmartRecipe.CategoryChip"
+                        android:id="@+id/chipLunch"
                         android:text="午餐" />
 
                     <TextView
                         style="@style/Widget.SmartRecipe.CategoryChip"
+                        android:id="@+id/chipDinner"
                         android:text="晚餐" />
 
                     <TextView
                         style="@style/Widget.SmartRecipe.CategoryChip"
+                        android:id="@+id/chipDessert"
                         android:text="甜点" />
                 </LinearLayout>
             </HorizontalScrollView>
@@ -221,6 +226,7 @@
                     android:id="@+id/btnIngredientFilter"
                     style="@style/Widget.SmartRecipe.FeatureRowButton"
                     android:layout_marginTop="10dp"
+                    android:text="食材筛选\n快速筛选所需食材" />
                     android:text="食材识别\n快速扫描冰箱里的食材" />
 
                 <com.google.android.material.button.MaterialButton
@@ -264,6 +270,7 @@
                             android:orientation="horizontal">
 
                             <ImageView
+                                android:id="@+id/ivAvatar"
                                 android:layout_width="74dp"
                                 android:layout_height="74dp"
                                 android:background="@drawable/bg_avatar"
@@ -286,6 +293,8 @@
                                     android:textColor="@color/textPrimary"
                                     android:textSize="30sp"
                                     android:textStyle="bold" />
+                            </LinearLayout>
+                        </LinearLayout>
 
                                 <TextView
                                     android:id="@+id/tvCurrentUser"
