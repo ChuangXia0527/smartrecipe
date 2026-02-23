@@ -14,6 +14,16 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        def localProps = new Properties()
+        def localPropsFile = rootProject.file("local.properties")
+        if (localPropsFile.exists()) {
+            localPropsFile.withInputStream { stream -> localProps.load(stream) }
+        }
+
+        buildConfigField "String", "IFLYTEK_APP_ID", "\"${localProps.getProperty('iflytek.appId', '')}\""
+        buildConfigField "String", "IFLYTEK_API_KEY", "\"${localProps.getProperty('iflytek.apiKey', '')}\""
+        buildConfigField "String", "IFLYTEK_API_SECRET", "\"${localProps.getProperty('iflytek.apiSecret', '')}\""
     }
 
     buildTypes {
@@ -31,6 +41,7 @@ android {
     // 推荐开启，写界面更舒服（你后面做列表/详情会很省事）
     buildFeatures {
         viewBinding true
+        buildConfig true
     }
     aaptOptions {
         noCompress "tflite"
@@ -71,6 +82,7 @@ dependencies {
 
     // ========== ML Kit 图像识别（图像标签）==========
     implementation "com.google.mlkit:image-labeling:17.0.8"
+    implementation "com.squareup.okhttp3:okhttp:4.12.0"
 
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
