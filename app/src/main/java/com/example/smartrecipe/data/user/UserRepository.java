@@ -35,6 +35,25 @@ public class UserRepository {
         return account == null ? null : account.username;
     }
 
+    public static boolean updateUsername(Context context, long userId, String newUsername) {
+        AppDatabase db = AppDatabase.get(context);
+        UserAccount account = db.userAccountDao().findById(userId);
+        if (account == null) return false;
+
+        UserAccount sameName = db.userAccountDao().findByUsername(newUsername);
+        if (sameName != null && sameName.id != userId) return false;
+
+        return db.userAccountDao().updateUsername(userId, newUsername) > 0;
+    }
+
+    public static boolean updatePassword(Context context, long userId, String newPassword) {
+        AppDatabase db = AppDatabase.get(context);
+        UserAccount account = db.userAccountDao().findById(userId);
+        if (account == null) return false;
+
+        return db.userAccountDao().updatePassword(userId, newPassword) > 0;
+    }
+
     public static boolean updateUserCredentials(Context context, long userId, String newUsername, String newPassword) {
         AppDatabase db = AppDatabase.get(context);
         UserAccount account = db.userAccountDao().findById(userId);
