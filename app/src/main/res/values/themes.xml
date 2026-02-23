@@ -61,7 +61,7 @@
         <item name="android:insetBottom">0dp</item>
     </style>
 
-    <style name="Widget.SmartRecipe.CategoryChip" parent="Widget.Material3.TextView">
+    <style name="Widget.SmartRecipe.CategoryChip" parent="TextAppearance.Material3.BodyMedium">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginEnd">8dp</item>
@@ -79,7 +79,7 @@
         <item name="android:textColor">@android:color/white</item>
     </style>
 
-    <style name="Widget.SmartRecipe.StatItem" parent="Widget.Material3.TextView">
+    <style name="Widget.SmartRecipe.StatItem" parent="TextAppearance.Material3.TitleMedium">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>

@@ -11,6 +11,7 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
+        <!-- =================== HOME =================== -->
         <LinearLayout
             android:id="@+id/sectionHome"
             android:layout_width="match_parent"
@@ -61,9 +62,14 @@
                     android:layout_height="44dp"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
-                    android:text="☰"
-                    android:textColor="@color/textSecondary"
-                    android:textSize="16sp"
+                    android:padding="0dp"
+                    android:minWidth="44dp"
+                    android:minHeight="44dp"
+                    android:text=""
+                    app:icon="@android:drawable/ic_menu_search"
+                    app:iconTint="@color/textSecondary"
+                    app:iconGravity="textStart"
+                    app:iconPadding="0dp"
                     app:backgroundTint="@android:color/transparent"
                     app:cornerRadius="12dp"
                     app:strokeColor="#13000000"
@@ -82,28 +88,28 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        style="@style/Widget.SmartRecipe.CategoryChip.Active"
                         android:id="@+id/chipRecommend"
+                        style="@style/Widget.SmartRecipe.CategoryChip.Active"
                         android:text="推荐" />
 
                     <TextView
-                        style="@style/Widget.SmartRecipe.CategoryChip"
                         android:id="@+id/chipBreakfast"
+                        style="@style/Widget.SmartRecipe.CategoryChip"
                         android:text="早餐" />
 
                     <TextView
-                        style="@style/Widget.SmartRecipe.CategoryChip"
                         android:id="@+id/chipLunch"
+                        style="@style/Widget.SmartRecipe.CategoryChip"
                         android:text="午餐" />
 
                     <TextView
-                        style="@style/Widget.SmartRecipe.CategoryChip"
                         android:id="@+id/chipDinner"
+                        style="@style/Widget.SmartRecipe.CategoryChip"
                         android:text="晚餐" />
 
                     <TextView
-                        style="@style/Widget.SmartRecipe.CategoryChip"
                         android:id="@+id/chipDessert"
+                        style="@style/Widget.SmartRecipe.CategoryChip"
                         android:text="甜点" />
                 </LinearLayout>
             </HorizontalScrollView>
@@ -137,6 +143,7 @@
                 android:paddingBottom="12dp" />
         </LinearLayout>
 
+        <!-- =================== FEATURE =================== -->
         <ScrollView
             android:id="@+id/sectionFeature"
             android:layout_width="match_parent"
@@ -222,12 +229,13 @@
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
+                <!-- ✅ 修复：原来这里多了一行孤立的 android:text -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnIngredientFilter"
                     style="@style/Widget.SmartRecipe.FeatureRowButton"
                     android:layout_marginTop="10dp"
                     android:text="食材筛选\n快速筛选所需食材" />
-                    android:text="食材识别\n快速扫描冰箱里的食材" />
+
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnPreference"
@@ -237,6 +245,7 @@
             </LinearLayout>
         </ScrollView>
 
+        <!-- =================== MINE =================== -->
         <ScrollView
             android:id="@+id/sectionMine"
             android:layout_width="match_parent"
@@ -293,32 +302,12 @@
                                     android:textColor="@color/textPrimary"
                                     android:textSize="30sp"
                                     android:textStyle="bold" />
+
                             </LinearLayout>
                         </LinearLayout>
 
-                                <TextView
-                                    android:id="@+id/tvCurrentUser"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="4dp"
-                                    android:text="当前用户：-"
-                                    android:textColor="@color/textSecondary"
-                                    android:textSize="16sp" />
-                            </LinearLayout>
-                        </LinearLayout>
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
-                            android:orientation="horizontal"
-                            android:weightSum="4">
 
-                            <TextView style="@style/Widget.SmartRecipe.StatItem" android:text="128\n食谱" />
-                            <TextView style="@style/Widget.SmartRecipe.StatItem" android:text="2.4k\n粉丝" />
-                            <TextView style="@style/Widget.SmartRecipe.StatItem" android:text="356\n关注" />
-                            <TextView style="@style/Widget.SmartRecipe.StatItem" android:text="12k\n获赞" />
-                        </LinearLayout>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
