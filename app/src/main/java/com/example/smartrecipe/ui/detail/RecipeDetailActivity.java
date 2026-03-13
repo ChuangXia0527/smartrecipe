@@ -12,20 +12,21 @@ import com.example.smartrecipe.R;
 import com.example.smartrecipe.data.entity.Recipe;
 import com.example.smartrecipe.data.repository.RecipeRepository;
 import com.example.smartrecipe.data.session.SessionManager;
-import com.example.smartrecipe.ui.common.RecipeImageResolver;
 import com.example.smartrecipe.data.user.UserRepository;
 import com.example.smartrecipe.ui.common.RecipeImageResolver;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.List;
 
 public class RecipeDetailActivity extends AppCompatActivity {
 
-
-    private TextView tvTitle, tvMeta, tvTags, tvIngredients, tvSteps, tvRecipeCoverEmoji;
+    private TextView tvTitle, tvMeta, tvTags, tvIngredients, tvSteps;
     private ImageView ivRecipeCover;
     private Button btnFavorite;
+    private Button btnRate;
     private Recipe recipe;
     private long userId;
+    private long viewStartMs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +40,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
         tvSteps = findViewById(R.id.tvSteps);
         ivRecipeCover = findViewById(R.id.ivRecipeCover);
         btnFavorite = findViewById(R.id.btnFavoriteToggle);
+        btnRate = findViewById(R.id.btnRateRecipe);
 
         userId = SessionManager.currentUserId(this);
 
@@ -50,6 +52,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
             return;
         }
 
+        viewStartMs = System.currentTimeMillis();
         UserRepository.trackRecipeOpen(this, userId, recipe.getId());
 
         tvTitle.setText(recipe.getName());
@@ -60,9 +63,18 @@ public class RecipeDetailActivity extends AppCompatActivity {
         ivRecipeCover.setImageResource(RecipeImageResolver.resolveImageRes(this, recipe));
         ivRecipeCover.setBackgroundResource(RecipeImageResolver.resolveBackgroundRes(recipe));
 
-
         refreshFavoriteState();
         btnFavorite.setOnClickListener(v -> toggleFavorite());
+        btnRate.setOnClickListener(v -> showRatingDialog());
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (recipe == null || userId <= 0 || viewStartMs <= 0) return;
+        long durationSec = Math.max(1, (System.currentTimeMillis() - viewStartMs) / 1000);
+        UserRepository.trackRecipeViewDuration(this, userId, recipe.getId(), durationSec);
+        viewStartMs = System.currentTimeMillis();
     }
 
     private void toggleFavorite() {
@@ -76,6 +88,20 @@ public class RecipeDetailActivity extends AppCompatActivity {
             Toast.makeText(this, "已收藏", Toast.LENGTH_SHORT).show();
         }
         refreshFavoriteState();
+    }
+
+    private void showRatingDialog() {
+        if (recipe == null || userId <= 0) return;
+        String[] items = {"1 分", "2 分", "3 分", "4 分", "5 分"};
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("给这道菜打分")
+                .setItems(items, (dialog, which) -> {
+                    int rating = which + 1;
+                    UserRepository.rateRecipe(this, userId, recipe.getId(), rating);
+                    Toast.makeText(this, "感谢评分：" + rating + " 分", Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("取消", null)
+                .show();
     }
 
     private void refreshFavoriteState() {
