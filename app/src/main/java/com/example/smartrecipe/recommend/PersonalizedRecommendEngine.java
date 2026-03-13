@@ -20,9 +20,9 @@ public class PersonalizedRecommendEngine {
         Map<Integer, Integer> favoriteBoost = new HashMap<>();
         for (Integer id : favoriteIds) favoriteBoost.put(id, 1);
 
-        Map<Integer, Integer> behaviorBoost = new HashMap<>();
+        Map<Integer, UserBehaviorDao.RecipeScoreRow> behaviorMap = new HashMap<>();
         for (UserBehaviorDao.RecipeScoreRow row : behaviorScores) {
-            behaviorBoost.put(row.recipeId, row.cnt);
+            behaviorMap.put(row.recipeId, row);
         }
 
         List<ScoredRecipe> list = new ArrayList<>();
@@ -38,7 +38,15 @@ public class PersonalizedRecommendEngine {
             }
 
             // 热门/历史行为（可解释为“受欢迎程度 + 用户偏好行为”）
-            score += behaviorBoost.getOrDefault(recipe.getId(), 0) * 2;
+            UserBehaviorDao.RecipeScoreRow behavior = behaviorMap.get(recipe.getId());
+            if (behavior != null) {
+                score += behavior.cnt * 2;
+
+                // 用户反馈学习：综合收藏、评分、浏览时长动态调整
+                score += behavior.favoriteDelta * 8;
+                score += behavior.ratingDelta * 5;
+                score += Math.min(8, behavior.totalViewDuration / 120);
+            }
             score += favoriteBoost.getOrDefault(recipe.getId(), 0) * 8;
 
             // 偏好快手、低热量时的自然排序
