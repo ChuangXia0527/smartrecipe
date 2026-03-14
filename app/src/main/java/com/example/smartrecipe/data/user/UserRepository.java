@@ -77,10 +77,12 @@ public class UserRepository {
 
     public static void addFavorite(Context context, long userId, int recipeId) {
         AppDatabase.get(context).favoriteRecipeDao().add(new FavoriteRecipe(userId, recipeId, System.currentTimeMillis()));
+        trackBehavior(context, userId, recipeId, "FAVORITE", "1");
     }
 
     public static void removeFavorite(Context context, long userId, int recipeId) {
         AppDatabase.get(context).favoriteRecipeDao().remove(userId, recipeId);
+        trackBehavior(context, userId, recipeId, "FAVORITE", "-1");
     }
 
     public static boolean isFavorite(Context context, long userId, int recipeId) {
@@ -92,11 +94,21 @@ public class UserRepository {
     }
 
     public static void trackRecipeOpen(Context context, long userId, int recipeId) {
-        AppDatabase.get(context).userBehaviorDao().insert(new UserBehavior(userId, recipeId, "VIEW", null, System.currentTimeMillis()));
+        trackBehavior(context, userId, recipeId, "VIEW", null);
+    }
+
+    public static void trackRecipeViewDuration(Context context, long userId, int recipeId, long durationSeconds) {
+        if (durationSeconds <= 0) return;
+        trackBehavior(context, userId, recipeId, "VIEW_DURATION", String.valueOf(durationSeconds));
+    }
+
+    public static void rateRecipe(Context context, long userId, int recipeId, int rating) {
+        if (rating < 1 || rating > 5) return;
+        trackBehavior(context, userId, recipeId, "RATE", String.valueOf(rating));
     }
 
     public static void trackSearch(Context context, long userId, String keyword) {
-        AppDatabase.get(context).userBehaviorDao().insert(new UserBehavior(userId, -1, "SEARCH", keyword, System.currentTimeMillis()));
+        trackBehavior(context, userId, -1, "SEARCH", keyword);
     }
 
     public static List<Integer> recentViewedRecipeIds(Context context, long userId, int limit) {
@@ -112,5 +124,11 @@ public class UserRepository {
 
     public static List<com.example.smartrecipe.data.local.dao.UserBehaviorDao.RecipeScoreRow> behaviorRecipeScores(Context context, long userId) {
         return AppDatabase.get(context).userBehaviorDao().behaviorRecipeScores(userId);
+    }
+
+    private static void trackBehavior(Context context, long userId, int recipeId, String actionType, String keyword) {
+        AppDatabase.get(context).userBehaviorDao().insert(
+                new UserBehavior(userId, recipeId, actionType, keyword, System.currentTimeMillis())
+        );
     }
 }
