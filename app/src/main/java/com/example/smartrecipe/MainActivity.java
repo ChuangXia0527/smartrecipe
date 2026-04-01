@@ -145,9 +145,11 @@ public class MainActivity extends AppCompatActivity {
         com.example.smartrecipe.data.local.entity.UserPreference pref = UserRepository.getPreference(this, userId);
         homeRecommend = PersonalizedRecommendEngine.recommend(
                 allRecipes,
+                userId,
                 pref,
                 UserRepository.favoriteRecipeIds(this, userId),
                 UserRepository.behaviorRecipeScores(this, userId),
+                UserRepository.behaviorRecipeScoresForAllUsers(this),
                 30
         );
         applyCategoryFilter(CATEGORY_RECOMMEND);

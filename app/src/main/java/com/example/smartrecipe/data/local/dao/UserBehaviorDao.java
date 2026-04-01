@@ -27,11 +27,23 @@ public interface UserBehaviorDao {
             "FROM user_behavior WHERE userId = :userId AND recipeId > 0 GROUP BY recipeId ORDER BY cnt DESC")
     List<RecipeScoreRow> behaviorRecipeScores(long userId);
 
+    @Query("SELECT userId, recipeId, " +
+            "SUM(CASE WHEN actionType = 'VIEW' THEN 1 ELSE 0 END) as cnt, " +
+            "SUM(CASE WHEN actionType = 'FAVORITE' AND keyword = '1' THEN 1 WHEN actionType = 'FAVORITE' AND keyword = '-1' THEN -1 ELSE 0 END) as favoriteDelta, " +
+            "SUM(CASE WHEN actionType = 'RATE' THEN CAST(keyword AS INTEGER) - 3 ELSE 0 END) as ratingDelta, " +
+            "SUM(CASE WHEN actionType = 'VIEW_DURATION' THEN CAST(keyword AS INTEGER) ELSE 0 END) as totalViewDuration " +
+            "FROM user_behavior WHERE recipeId > 0 GROUP BY userId, recipeId")
+    List<UserRecipeScoreRow> behaviorRecipeScoresForAllUsers();
+
     class RecipeScoreRow {
         public int recipeId;
         public int cnt;
         public int favoriteDelta;
         public int ratingDelta;
         public int totalViewDuration;
+    }
+
+    class UserRecipeScoreRow extends RecipeScoreRow {
+        public long userId;
     }
 }

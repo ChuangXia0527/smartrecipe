@@ -15,6 +15,8 @@ import java.util.Set;
 
 public class UserRepository {
 
+    private static final long EFFECTIVE_VIEW_THRESHOLD_SECONDS = 3L;
+
     public static UserAccount register(Context context, String username, String password) {
         AppDatabase db = AppDatabase.get(context);
         if (db.userAccountDao().findByUsername(username) != null) {
@@ -98,7 +100,7 @@ public class UserRepository {
     }
 
     public static void trackRecipeViewDuration(Context context, long userId, int recipeId, long durationSeconds) {
-        if (durationSeconds <= 0) return;
+        if (durationSeconds < EFFECTIVE_VIEW_THRESHOLD_SECONDS) return;
         trackBehavior(context, userId, recipeId, "VIEW_DURATION", String.valueOf(durationSeconds));
     }
 
@@ -124,6 +126,10 @@ public class UserRepository {
 
     public static List<com.example.smartrecipe.data.local.dao.UserBehaviorDao.RecipeScoreRow> behaviorRecipeScores(Context context, long userId) {
         return AppDatabase.get(context).userBehaviorDao().behaviorRecipeScores(userId);
+    }
+
+    public static List<com.example.smartrecipe.data.local.dao.UserBehaviorDao.UserRecipeScoreRow> behaviorRecipeScoresForAllUsers(Context context) {
+        return AppDatabase.get(context).userBehaviorDao().behaviorRecipeScoresForAllUsers();
     }
 
     private static void trackBehavior(Context context, long userId, int recipeId, String actionType, String keyword) {
