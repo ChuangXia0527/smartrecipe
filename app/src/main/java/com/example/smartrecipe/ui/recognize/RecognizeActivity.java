@@ -191,8 +191,10 @@ public class RecognizeActivity extends AppCompatActivity {
             tvLabels.setText("识别结果：\n" + r.toReadable());
 
             ArrayList<String> ingredients = new ArrayList<>();
+            ArrayList<Float> accuracies = new ArrayList<>();
             if (r.score >= CONF_THRESHOLD) {
                 ingredients.add(r.label); // labels.txt 是中文，这里就是 “番茄”
+                accuracies.add(r.score);
             } else {
                 Toast.makeText(this, "置信度较低，建议换图/补充训练样本", Toast.LENGTH_SHORT).show();
             }
@@ -200,6 +202,7 @@ public class RecognizeActivity extends AppCompatActivity {
             // 跳到确认页（即使为空也能手动添加）
             Intent it = new Intent(RecognizeActivity.this, RecognizeResultActivity.class);
             it.putStringArrayListExtra("ingredients", ingredients);
+            it.putExtra("ingredient_accuracies", toFloatArray(accuracies));
             startActivity(it);
 
         } catch (IOException e) {
@@ -212,5 +215,13 @@ public class RecognizeActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if (classifier != null) classifier.close();
+    }
+
+    private float[] toFloatArray(ArrayList<Float> values) {
+        float[] arr = new float[values.size()];
+        for (int i = 0; i < values.size(); i++) {
+            arr[i] = values.get(i);
+        }
+        return arr;
     }
 }

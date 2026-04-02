@@ -17,13 +17,27 @@ import java.util.Set;
 
 public class IngredientCheckAdapter extends RecyclerView.Adapter<IngredientCheckAdapter.VH> {
 
-    private final List<String> data;
+    public static class IngredientItem {
+        public final String name;
+        public final Float accuracy;
+
+        public IngredientItem(String name, Float accuracy) {
+            this.name = name;
+            this.accuracy = accuracy;
+        }
+    }
+
+    private final List<IngredientItem> data;
     private final Set<String> selected = new LinkedHashSet<>();
 
-    public IngredientCheckAdapter(List<String> data) {
+    public IngredientCheckAdapter(List<IngredientItem> data) {
         this.data = data;
         // 默认全选
-        if (data != null) selected.addAll(data);
+        if (data != null) {
+            for (IngredientItem item : data) {
+                selected.add(item.name);
+            }
+        }
     }
 
     public Set<String> getSelected() {
@@ -40,15 +54,21 @@ public class IngredientCheckAdapter extends RecyclerView.Adapter<IngredientCheck
 
     @Override
     public void onBindViewHolder(@NonNull VH holder, int position) {
-        String ing = data.get(position);
-        holder.tvName.setText(ing);
+        IngredientItem item = data.get(position);
+        holder.tvName.setText(item.name);
+        if (item.accuracy != null) {
+            holder.tvAccuracy.setText(String.format("准确率：%.1f%%", item.accuracy * 100f));
+            holder.tvAccuracy.setVisibility(View.VISIBLE);
+        } else {
+            holder.tvAccuracy.setVisibility(View.GONE);
+        }
 
         holder.cb.setOnCheckedChangeListener(null);
-        holder.cb.setChecked(selected.contains(ing));
+        holder.cb.setChecked(selected.contains(item.name));
 
         holder.cb.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) selected.add(ing);
-            else selected.remove(ing);
+            if (isChecked) selected.add(item.name);
+            else selected.remove(item.name);
         });
 
         holder.itemView.setOnClickListener(v -> holder.cb.setChecked(!holder.cb.isChecked()));
@@ -62,11 +82,13 @@ public class IngredientCheckAdapter extends RecyclerView.Adapter<IngredientCheck
     static class VH extends RecyclerView.ViewHolder {
         CheckBox cb;
         TextView tvName;
+        TextView tvAccuracy;
 
         VH(@NonNull View itemView) {
             super(itemView);
             cb = itemView.findViewById(R.id.cb);
             tvName = itemView.findViewById(R.id.tvName);
+            tvAccuracy = itemView.findViewById(R.id.tvAccuracy);
         }
     }
 }
