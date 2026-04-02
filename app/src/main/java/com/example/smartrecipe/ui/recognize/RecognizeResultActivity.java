@@ -39,8 +39,16 @@ public class RecognizeResultActivity extends AppCompatActivity {
 
         ArrayList<String> ingredients = getIntent().getStringArrayListExtra("ingredients");
         if (ingredients == null) ingredients = new ArrayList<>();
+        float[] accuracies = getIntent().getFloatArrayExtra("ingredient_accuracies");
 
-        ArrayList<String> mutableIngredients = new ArrayList<>(ingredients);
+        ArrayList<IngredientCheckAdapter.IngredientItem> mutableIngredients = new ArrayList<>();
+        for (int i = 0; i < ingredients.size(); i++) {
+            Float accuracy = null;
+            if (accuracies != null && i < accuracies.length) {
+                accuracy = accuracies[i];
+            }
+            mutableIngredients.add(new IngredientCheckAdapter.IngredientItem(ingredients.get(i), accuracy));
+        }
 
         rvIngredients.setLayoutManager(new LinearLayoutManager(this));
         ingAdapter = new IngredientCheckAdapter(mutableIngredients);
