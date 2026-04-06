@@ -9,68 +9,99 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="18dp">
+        android:padding="16dp">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="系统后台管理"
-            android:textColor="@color/textPrimary"
-            android:textSize="32sp"
+            android:text="系统管理员控制台"
+            android:textSize="24sp"
             android:textStyle="bold" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="选择模块进入详细管理"
-            android:textColor="@color/textSecondary"
-            android:textSize="18sp" />
+            android:layout_marginTop="12dp"
+            android:text="1) 用户管理"
+            android:textStyle="bold" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnModuleUser"
-            style="@style/Widget.SmartRecipe.MineRowButton"
-            android:layout_marginTop="14dp"
-            android:text="用户管理" />
+        <TextView
+            android:id="@+id/tvAdminUsers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_input_surface"
+            android:padding="10dp" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnModuleRecipe"
-            style="@style/Widget.SmartRecipe.MineRowButton"
-            android:layout_marginTop="10dp"
-            android:text="食谱与食材管理" />
+        <EditText android:id="@+id/etAdminUserId" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="用户ID" android:inputType="number" android:layout_marginTop="6dp" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
+        <EditText android:id="@+id/etAdminResetPassword" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="重置密码" android:layout_marginTop="6dp" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnModulePurchase"
-            style="@style/Widget.SmartRecipe.MineRowButton"
-            android:layout_marginTop="10dp"
-            android:text="采购记录管理" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+            <com.google.android.material.button.MaterialButton android:id="@+id/btnAdminDisableUser" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="禁用" app:backgroundTint="@color/accent"/>
+            <com.google.android.material.button.MaterialButton android:id="@+id/btnAdminEnableUser" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="启用" app:backgroundTint="@color/accent"/>
+            <com.google.android.material.button.MaterialButton android:id="@+id/btnAdminResetPassword" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="重置密码" app:backgroundTint="@color/accent"/>
+        </LinearLayout>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnModuleAi"
-            style="@style/Widget.SmartRecipe.MineRowButton"
-            android:layout_marginTop="10dp"
-            android:text="Android与AI技术配置" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="2) 食谱/分类/食材管理" android:textStyle="bold"/>
+        <TextView android:id="@+id/tvAdminRecipeSummary" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnModuleSystem"
-            style="@style/Widget.SmartRecipe.MineRowButton"
-            android:layout_marginTop="10dp"
-            android:text="系统管理" />
+        <EditText android:id="@+id/etAdminRecipeId" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="食谱ID(更新/删除用)" android:inputType="number" android:background="@drawable/bg_input_surface" android:padding="10dp" android:layout_marginTop="6dp"/>
+        <EditText android:id="@+id/etAdminRecipeName" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="食谱名称" android:background="@drawable/bg_input_surface" android:padding="10dp" android:layout_marginTop="6dp"/>
+        <EditText android:id="@+id/etAdminRecipeCategory" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="食谱分类" android:background="@drawable/bg_input_surface" android:padding="10dp" android:layout_marginTop="6dp"/>
+        <EditText android:id="@+id/etAdminRecipeIngredients" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="食材组成" android:background="@drawable/bg_input_surface" android:padding="10dp" android:layout_marginTop="6dp"/>
+        <EditText android:id="@+id/etAdminRecipeSteps" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="制作步骤" android:background="@drawable/bg_input_surface" android:padding="10dp" android:layout_marginTop="6dp"/>
+        <EditText android:id="@+id/etAdminRecipeNutrition" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="营养信息" android:background="@drawable/bg_input_surface" android:padding="10dp" android:layout_marginTop="6dp"/>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+            <com.google.android.material.button.MaterialButton android:id="@+id/btnAdminAddRecipe" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="新增食谱" app:backgroundTint="@color/accent"/>
+            <com.google.android.material.button.MaterialButton android:id="@+id/btnAdminUpdateRecipe" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="修改食谱" app:backgroundTint="@color/accent"/>
+            <com.google.android.material.button.MaterialButton android:id="@+id/btnAdminDeleteRecipe" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="删除食谱" app:backgroundTint="@color/accent"/>
+        </LinearLayout>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnModuleProfile"
-            style="@style/Widget.SmartRecipe.MineRowButton"
-            android:layout_marginTop="10dp"
-            android:text="个人信息管理" />
+        <EditText android:id="@+id/etAdminCategoryId" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="分类ID" android:inputType="number" android:background="@drawable/bg_input_surface" android:padding="10dp" android:layout_marginTop="6dp"/>
+        <EditText android:id="@+id/etAdminCategoryName" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="分类名称" android:background="@drawable/bg_input_surface" android:padding="10dp" android:layout_marginTop="6dp"/>
+        <EditText android:id="@+id/etAdminCategoryDesc" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="分类描述" android:background="@drawable/bg_input_surface" android:padding="10dp" android:layout_marginTop="6dp"/>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+            <com.google.android.material.button.MaterialButton android:id="@+id/btnAdminAddCategory" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="新增分类" app:backgroundTint="@color/accent"/>
+            <com.google.android.material.button.MaterialButton android:id="@+id/btnAdminUpdateCategory" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="修改分类" app:backgroundTint="@color/accent"/>
+            <com.google.android.material.button.MaterialButton android:id="@+id/btnAdminDeleteCategory" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="删除分类" app:backgroundTint="@color/accent"/>
+        </LinearLayout>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnAdminLogout"
-            style="@style/Widget.SmartRecipe.MineRowButton"
-            android:layout_marginTop="10dp"
-            android:text="退出管理员登录"
-            android:textColor="#B91C1C"
-            app:icon="@android:drawable/ic_lock_power_off"
-            app:iconTint="#B91C1C" />
+        <EditText android:id="@+id/etAdminIngredientId" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="食材ID" android:inputType="number" android:background="@drawable/bg_input_surface" android:padding="10dp" android:layout_marginTop="6dp"/>
+        <EditText android:id="@+id/etAdminIngredientName" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="食材名称" android:background="@drawable/bg_input_surface" android:padding="10dp" android:layout_marginTop="6dp"/>
+        <EditText android:id="@+id/etAdminIngredientNutrition" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="营养成分" android:background="@drawable/bg_input_surface" android:padding="10dp" android:layout_marginTop="6dp"/>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+            <com.google.android.material.button.MaterialButton android:id="@+id/btnAdminAddIngredient" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="新增食材" app:backgroundTint="@color/accent"/>
+            <com.google.android.material.button.MaterialButton android:id="@+id/btnAdminUpdateIngredient" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="修改食材" app:backgroundTint="@color/accent"/>
+            <com.google.android.material.button.MaterialButton android:id="@+id/btnAdminDeleteIngredient" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="删除食材" app:backgroundTint="@color/accent"/>
+        </LinearLayout>
+
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="3) 采购记录管理" android:textStyle="bold"/>
+        <TextView android:id="@+id/tvAdminPurchaseSummary" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnAdminExportPurchase" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="导出采购CSV到剪贴板" app:backgroundTint="@color/accent"/>
+
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="4) Android与AI技术配置" android:textStyle="bold"/>
+        <EditText android:id="@+id/etAdminSimilarity" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="推荐相似度阈值" android:inputType="numberDecimal" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
+        <EditText android:id="@+id/etAdminPreferenceWeight" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="偏好学习权重" android:inputType="numberDecimal" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
+        <EditText android:id="@+id/etAdminNutritionBase" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="营养成分库基础数据" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
+        <EditText android:id="@+id/etAdminTabooBase" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="饮食禁忌库基础数据" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnAdminSaveAiConfig" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="保存AI配置" app:backgroundTint="@color/accent"/>
+
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="5) 系统管理（公告/反馈）" android:textStyle="bold"/>
+        <EditText android:id="@+id/etAdminAnnouncementTitle" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="公告标题" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
+        <EditText android:id="@+id/etAdminAnnouncementContent" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="公告内容" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnAdminPublishAnnouncement" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="发布系统公告" app:backgroundTint="@color/accent"/>
+        <TextView android:id="@+id/tvAdminAnnouncementSummary" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
+
+        <EditText android:id="@+id/etAdminFeedbackId" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="反馈ID" android:inputType="number" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
+        <EditText android:id="@+id/etAdminFeedbackStatus" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="处理状态（已处理/驳回）" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
+        <EditText android:id="@+id/etAdminFeedbackReply" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="处理回复" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnAdminProcessFeedback" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="处理用户反馈" app:backgroundTint="@color/accent"/>
+        <TextView android:id="@+id/tvAdminFeedbackSummary" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
+
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="6) 个人信息管理" android:textStyle="bold"/>
+        <EditText android:id="@+id/etAdminUsername" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="管理员用户名" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
+        <EditText android:id="@+id/etAdminPassword" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="管理员密码" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnAdminSaveProfile" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="保存管理员信息" app:backgroundTint="@color/accent"/>
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnAdminLogout" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="退出管理员登录" app:backgroundTint="@color/accent"/>
 
     </LinearLayout>
 </ScrollView>
