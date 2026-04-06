@@ -10,9 +10,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.smartrecipe.MainActivity;
 import com.example.smartrecipe.R;
+import com.example.smartrecipe.data.admin.AdminConfigManager;
 import com.example.smartrecipe.data.local.entity.UserAccount;
+import com.example.smartrecipe.data.session.AdminSessionManager;
 import com.example.smartrecipe.data.session.SessionManager;
 import com.example.smartrecipe.data.user.UserRepository;
+import com.example.smartrecipe.ui.admin.AdminActivity;
 
 public class AuthActivity extends AppCompatActivity {
 
@@ -29,9 +32,16 @@ public class AuthActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(v -> {
             String username = etUsername.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
+
+            if (AdminConfigManager.login(this, username, password)) {
+                AdminSessionManager.login(this);
+                gotoAdmin();
+                return;
+            }
+
             UserAccount user = UserRepository.login(this, username, password);
             if (user == null) {
-                Toast.makeText(this, "登录失败：用户名或密码错误", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "登录失败：用户名或密码错误，或账号被禁用", Toast.LENGTH_SHORT).show();
                 return;
             }
             SessionManager.login(this, user.id);
@@ -58,6 +68,12 @@ public class AuthActivity extends AppCompatActivity {
 
     private void gotoMain() {
         Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
+    private void gotoAdmin() {
+        Intent intent = new Intent(this, AdminActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
