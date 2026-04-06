@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bgApp">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="食谱与食材管理" android:textSize="24sp" android:textStyle="bold"/>
+        <TextView android:id="@+id/tvRecipeList" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
+        <EditText android:id="@+id/etRecipeId" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="食谱ID(管理员食谱)" android:inputType="number" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
+        <EditText android:id="@+id/etRecipeName" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="食谱名称" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
+        <EditText android:id="@+id/etRecipeCategory" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="分类" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
+        <EditText android:id="@+id/etRecipeIngredients" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="食材" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
+        <EditText android:id="@+id/etRecipeSteps" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="步骤" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
+        <EditText android:id="@+id/etRecipeNutrition" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="营养" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnAddRecipe" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="新增食谱" app:backgroundTint="@color/accent"/>
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnUpdateRecipe" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="更新食谱" app:backgroundTint="@color/accent"/>
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnDeleteRecipe" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="删除食谱" app:backgroundTint="@color/accent"/>
+
+        <TextView android:id="@+id/tvCategoryList" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
+        <EditText android:id="@+id/etCategoryId" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="分类ID" android:inputType="number" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
+        <EditText android:id="@+id/etCategoryName" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="分类名称" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
+        <EditText android:id="@+id/etCategoryDesc" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="分类描述" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnAddCategory" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="新增分类" app:backgroundTint="@color/accent"/>
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnUpdateCategory" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="更新分类" app:backgroundTint="@color/accent"/>
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnDeleteCategory" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="删除分类" app:backgroundTint="@color/accent"/>
+
+        <TextView android:id="@+id/tvIngredientList" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
+        <EditText android:id="@+id/etIngredientId" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="食材ID" android:inputType="number" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
+        <EditText android:id="@+id/etIngredientName" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="食材名称" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
+        <EditText android:id="@+id/etIngredientNutrition" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="营养成分" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnAddIngredient" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="新增食材" app:backgroundTint="@color/accent"/>
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnUpdateIngredient" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="更新食材" app:backgroundTint="@color/accent"/>
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnDeleteIngredient" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="删除食材" app:backgroundTint="@color/accent"/>
+    </LinearLayout>
+</ScrollView>

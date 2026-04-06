@@ -45,5 +45,50 @@
             app:backgroundTint="@color/accent"
             app:cornerRadius="14dp" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="家庭基础信息"
+            android:textColor="@color/textPrimary"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etContact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_input_surface"
+            android:hint="联系方式（手机号/邮箱）"
+            android:padding="12dp" />
+
+        <EditText
+            android:id="@+id/etFamilySize"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_input_surface"
+            android:hint="家庭人数"
+            android:inputType="number"
+            android:padding="12dp" />
+
+        <EditText
+            android:id="@+id/etDietaryTaboo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_input_surface"
+            android:hint="饮食禁忌（如海鲜过敏）"
+            android:padding="12dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSaveExtra"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="12dp"
+            android:text="保存家庭信息"
+            app:backgroundTint="@color/accent"
+            app:cornerRadius="14dp" />
+
     </LinearLayout>
 </ScrollView>
