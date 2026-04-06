@@ -4,13 +4,20 @@ import android.content.Context;
 
 import com.example.smartrecipe.data.local.AppDatabase;
 import com.example.smartrecipe.data.local.entity.FavoriteRecipe;
+import com.example.smartrecipe.data.local.entity.InventoryItem;
+import com.example.smartrecipe.data.local.entity.PurchaseRecord;
 import com.example.smartrecipe.data.local.entity.UserAccount;
+import com.example.smartrecipe.data.local.entity.UserFeedback;
 import com.example.smartrecipe.data.local.entity.UserBehavior;
 import com.example.smartrecipe.data.local.entity.UserPreference;
+import com.example.smartrecipe.data.local.entity.UserProfileExtra;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 public class UserRepository {
@@ -122,6 +129,87 @@ public class UserRepository {
 
     public static List<UserBehavior> recentBehaviors(Context context, long userId, int limit) {
         return AppDatabase.get(context).userBehaviorDao().recentBehaviors(userId, limit);
+    }
+
+
+    public static void saveProfileExtra(Context context, long userId, String contact, int familySize, String dietaryTaboo) {
+        AppDatabase.get(context).userProfileExtraDao().upsert(
+                new UserProfileExtra(userId, contact, familySize, dietaryTaboo)
+        );
+    }
+
+    public static UserProfileExtra getProfileExtra(Context context, long userId) {
+        return AppDatabase.get(context).userProfileExtraDao().findByUserId(userId);
+    }
+
+    public static void addPurchaseRecord(Context context, long userId, String ingredientName, double quantity, double price) {
+        AppDatabase.get(context).purchaseRecordDao().insert(
+                new PurchaseRecord(userId, ingredientName, quantity, price, System.currentTimeMillis())
+        );
+    }
+
+    public static List<PurchaseRecord> recentPurchaseRecords(Context context, long userId, int limit) {
+        return AppDatabase.get(context).purchaseRecordDao().recentByUser(userId, limit);
+    }
+
+    public static void addInventoryItem(Context context, long userId, String ingredientName, double quantity, double lowStockThreshold) {
+        AppDatabase.get(context).inventoryItemDao().insert(
+                new InventoryItem(userId, ingredientName, quantity, lowStockThreshold, System.currentTimeMillis())
+        );
+    }
+
+    public static List<InventoryItem> inventoryItems(Context context, long userId) {
+        return AppDatabase.get(context).inventoryItemDao().listByUser(userId);
+    }
+
+    public static boolean updateInventoryQuantity(Context context, long itemId, double quantity) {
+        return AppDatabase.get(context).inventoryItemDao().updateQuantity(itemId, quantity, System.currentTimeMillis()) > 0;
+    }
+
+    public static void submitFeedback(Context context, long userId, String feedbackType, String content) {
+        AppDatabase.get(context).userFeedbackDao().insert(
+                new UserFeedback(userId, feedbackType, content, "已提交", "感谢反馈，我们会尽快处理。", System.currentTimeMillis(), 0L)
+        );
+    }
+
+    public static List<UserFeedback> feedbackList(Context context, long userId) {
+        return AppDatabase.get(context).userFeedbackDao().listByUser(userId);
+    }
+
+    public static PurchaseStats purchaseStats(Context context, long userId) {
+        List<PurchaseRecord> all = AppDatabase.get(context).purchaseRecordDao().allByUser(userId);
+        double monthlyCost = 0;
+        long now = System.currentTimeMillis();
+        long monthStart = now - 30L * 24 * 60 * 60 * 1000;
+        Map<String, Integer> counter = new HashMap<>();
+        for (PurchaseRecord record : all) {
+            if (record.purchasedAt >= monthStart) monthlyCost += record.price;
+            String name = record.ingredientName == null ? "" : record.ingredientName.trim();
+            if (name.isEmpty()) continue;
+            Integer count = counter.get(name);
+            counter.put(name, count == null ? 1 : count + 1);
+        }
+        String topIngredient = "暂无";
+        int topCount = 0;
+        for (Map.Entry<String, Integer> entry : counter.entrySet()) {
+            if (entry.getValue() > topCount) {
+                topIngredient = entry.getKey();
+                topCount = entry.getValue();
+            }
+        }
+        return new PurchaseStats(String.format(Locale.getDefault(), "%.2f", monthlyCost), topIngredient, topCount);
+    }
+
+    public static class PurchaseStats {
+        public final String monthlyCost;
+        public final String topIngredient;
+        public final int topCount;
+
+        public PurchaseStats(String monthlyCost, String topIngredient, int topCount) {
+            this.monthlyCost = monthlyCost;
+            this.topIngredient = topIngredient;
+            this.topCount = topCount;
+        }
     }
 
     public static List<com.example.smartrecipe.data.local.dao.UserBehaviorDao.RecipeScoreRow> behaviorRecipeScores(Context context, long userId) {
