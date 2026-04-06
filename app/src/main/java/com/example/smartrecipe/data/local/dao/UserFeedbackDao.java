@@ -16,4 +16,10 @@ public interface UserFeedbackDao {
 
     @Query("SELECT * FROM user_feedback WHERE userId = :userId ORDER BY createdAt DESC")
     List<UserFeedback> listByUser(long userId);
+
+    @Query("SELECT * FROM user_feedback ORDER BY createdAt DESC")
+    List<UserFeedback> listAll();
+
+    @Query("UPDATE user_feedback SET status = :status, reply = :reply, repliedAt = :repliedAt WHERE id = :id")
+    int process(long id, String status, String reply, long repliedAt);
 }

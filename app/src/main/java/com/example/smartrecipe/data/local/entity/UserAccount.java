@@ -10,9 +10,11 @@ public class UserAccount {
     public long id;
     public String username;
     public String password;
+    public int disabled;
 
     public UserAccount(String username, String password) {
         this.username = username;
         this.password = password;
+        this.disabled = 0;
     }
 }

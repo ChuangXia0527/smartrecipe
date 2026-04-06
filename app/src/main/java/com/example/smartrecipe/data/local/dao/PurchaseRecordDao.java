@@ -19,4 +19,7 @@ public interface PurchaseRecordDao {
 
     @Query("SELECT * FROM purchase_record WHERE userId = :userId")
     List<PurchaseRecord> allByUser(long userId);
+
+    @Query("SELECT * FROM purchase_record ORDER BY purchasedAt DESC")
+    List<PurchaseRecord> allRecords();
 }

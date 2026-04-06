@@ -36,6 +36,7 @@ public class UserRepository {
     public static UserAccount login(Context context, String username, String password) {
         UserAccount account = AppDatabase.get(context).userAccountDao().findByUsername(username);
         if (account == null) return null;
+        if (account.disabled == 1) return null;
         return account.password.equals(password) ? account : null;
     }
 
