@@ -344,6 +344,18 @@
                     android:text="浏览历史" />
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnIngredientManage"
+                    style="@style/Widget.SmartRecipe.MineRowButton"
+                    android:layout_marginTop="10dp"
+                    android:text="食材与采购管理" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnFeedback"
+                    style="@style/Widget.SmartRecipe.MineRowButton"
+                    android:layout_marginTop="10dp"
+                    android:text="意见反馈与公告" />
+
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnLogout"
                     style="@style/Widget.SmartRecipe.MineRowButton"
                     android:layout_marginTop="10dp"
