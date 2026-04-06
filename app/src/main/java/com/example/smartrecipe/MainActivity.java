@@ -22,9 +22,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smartrecipe.data.entity.Recipe;
 import com.example.smartrecipe.data.repository.RecipeRepository;
+import com.example.smartrecipe.data.session.AdminSessionManager;
 import com.example.smartrecipe.data.session.SessionManager;
 import com.example.smartrecipe.data.user.UserRepository;
 import com.example.smartrecipe.recommend.PersonalizedRecommendEngine;
+import com.example.smartrecipe.ui.admin.AdminActivity;
 import com.example.smartrecipe.ui.auth.AuthActivity;
 import com.example.smartrecipe.ui.detail.RecipeDetailActivity;
 import com.example.smartrecipe.ui.main.RecipeAdapter;
@@ -92,6 +94,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (AdminSessionManager.isLoggedIn(this)) {
+            Intent adminIntent = new Intent(this, AdminActivity.class);
+            adminIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(adminIntent);
+            finish();
+            return;
+        }
 
         if (!SessionManager.isLoggedIn(this)) {
             Intent authIntent = new Intent(this, AuthActivity.class);

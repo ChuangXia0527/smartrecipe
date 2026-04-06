@@ -9,6 +9,68 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:padding="18dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="系统后台管理"
+            android:textColor="@color/textPrimary"
+            android:textSize="32sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="选择模块进入详细管理"
+            android:textColor="@color/textSecondary"
+            android:textSize="18sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnModuleUser"
+            style="@style/Widget.SmartRecipe.MineRowButton"
+            android:layout_marginTop="14dp"
+            android:text="用户管理" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnModuleRecipe"
+            style="@style/Widget.SmartRecipe.MineRowButton"
+            android:layout_marginTop="10dp"
+            android:text="食谱与食材管理" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnModulePurchase"
+            style="@style/Widget.SmartRecipe.MineRowButton"
+            android:layout_marginTop="10dp"
+            android:text="采购记录管理" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnModuleAi"
+            style="@style/Widget.SmartRecipe.MineRowButton"
+            android:layout_marginTop="10dp"
+            android:text="Android与AI技术配置" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnModuleSystem"
+            style="@style/Widget.SmartRecipe.MineRowButton"
+            android:layout_marginTop="10dp"
+            android:text="系统管理" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnModuleProfile"
+            style="@style/Widget.SmartRecipe.MineRowButton"
+            android:layout_marginTop="10dp"
+            android:text="个人信息管理" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAdminLogout"
+            style="@style/Widget.SmartRecipe.MineRowButton"
+            android:layout_marginTop="10dp"
+            android:text="退出管理员登录"
+            android:textColor="#B91C1C"
+            app:icon="@android:drawable/ic_lock_power_off"
+            app:iconTint="#B91C1C" />
         android:padding="16dp">
 
         <TextView

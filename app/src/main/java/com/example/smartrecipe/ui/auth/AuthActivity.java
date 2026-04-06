@@ -34,8 +34,14 @@ public class AuthActivity extends AppCompatActivity {
             String password = etPassword.getText().toString().trim();
 
             if (AdminConfigManager.login(this, username, password)) {
+                SessionManager.logout(this);
                 AdminSessionManager.login(this);
                 gotoAdmin();
+                return;
+            }
+
+            if ("admin".equalsIgnoreCase(username)) {
+                Toast.makeText(this, "管理员账号或密码错误，请使用管理员最新凭证", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -44,6 +50,7 @@ public class AuthActivity extends AppCompatActivity {
                 Toast.makeText(this, "登录失败：用户名或密码错误，或账号被禁用", Toast.LENGTH_SHORT).show();
                 return;
             }
+            AdminSessionManager.logout(this);
             SessionManager.login(this, user.id);
             gotoMain();
         });
@@ -53,6 +60,10 @@ public class AuthActivity extends AppCompatActivity {
             String password = etPassword.getText().toString().trim();
             if (username.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "请输入用户名和密码", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if ("admin".equalsIgnoreCase(username)) {
+                Toast.makeText(this, "admin 为保留管理员账号，请更换用户名", Toast.LENGTH_SHORT).show();
                 return;
             }
             UserAccount user = UserRepository.register(this, username, password);

@@ -1,5 +1,7 @@
 package com.example.smartrecipe.ui.admin;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -12,6 +14,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.smartrecipe.R;
+import com.example.smartrecipe.data.session.AdminSessionManager;
+import com.example.smartrecipe.ui.auth.AuthActivity;
+
+public class AdminActivity extends AppCompatActivity {
+
 import com.example.smartrecipe.data.admin.AdminConfigManager;
 import com.example.smartrecipe.data.local.entity.AiConfig;
 import com.example.smartrecipe.data.local.entity.IngredientInfo;
@@ -80,6 +87,13 @@ public class AdminActivity extends AppCompatActivity {
             return;
         }
         setContentView(R.layout.activity_admin);
+
+        findViewById(R.id.btnModuleUser).setOnClickListener(v -> startActivity(new Intent(this, AdminUserManageActivity.class)));
+        findViewById(R.id.btnModuleRecipe).setOnClickListener(v -> startActivity(new Intent(this, AdminRecipeIngredientActivity.class)));
+        findViewById(R.id.btnModulePurchase).setOnClickListener(v -> startActivity(new Intent(this, AdminPurchaseManageActivity.class)));
+        findViewById(R.id.btnModuleAi).setOnClickListener(v -> startActivity(new Intent(this, AdminAiConfigActivity.class)));
+        findViewById(R.id.btnModuleSystem).setOnClickListener(v -> startActivity(new Intent(this, AdminSystemManageActivity.class)));
+        findViewById(R.id.btnModuleProfile).setOnClickListener(v -> startActivity(new Intent(this, AdminProfileActivity.class)));
         bindViews();
         bindActions();
         initAdminCredentialFields();

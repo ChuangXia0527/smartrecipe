@@ -117,6 +117,7 @@ public class AdminRecipeIngredientActivity extends AppCompatActivity {
         StringBuilder recipeSb = new StringBuilder("系统食谱:\n");
         for (int i = 0; i < Math.min(20, systemRecipes.size()); i++) {
             Recipe r = systemRecipes.get(i);
+            recipeSb.append("S-").append(r.getId()).append(" ").append(r.getTitle()).append("\n");
             recipeSb.append("S-").append(r.getId()).append(" ").append(r.getName()).append("\n");
         }
         recipeSb.append("\n管理员食谱:\n");
