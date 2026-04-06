@@ -6,6 +6,8 @@ import androidx.room.Query;
 
 import com.example.smartrecipe.data.local.entity.UserAccount;
 
+import java.util.List;
+
 @Dao
 public interface UserAccountDao {
     @Insert
@@ -17,6 +19,9 @@ public interface UserAccountDao {
     @Query("SELECT * FROM user_account WHERE id = :id LIMIT 1")
     UserAccount findById(long id);
 
+    @Query("SELECT * FROM user_account ORDER BY id DESC")
+    List<UserAccount> listAll();
+
     @Query("UPDATE user_account SET username = :username, password = :password WHERE id = :id")
     int updateCredentials(long id, String username, String password);
 
@@ -25,4 +30,7 @@ public interface UserAccountDao {
 
     @Query("UPDATE user_account SET password = :password WHERE id = :id")
     int updatePassword(long id, String password);
+
+    @Query("UPDATE user_account SET disabled = :disabled WHERE id = :id")
+    int updateDisabled(long id, int disabled);
 }

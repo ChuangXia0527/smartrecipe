@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bgApp">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Android与AI技术配置" android:textSize="24sp" android:textStyle="bold"/>
+        <EditText android:id="@+id/etSimilarity" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="推荐相似度阈值" android:inputType="numberDecimal" android:background="@drawable/bg_input_surface" android:padding="10dp" android:layout_marginTop="8dp"/>
+        <EditText android:id="@+id/etPreferenceWeight" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="偏好学习权重" android:inputType="numberDecimal" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
+        <EditText android:id="@+id/etNutritionBase" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="营养成分库基础数据" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
+        <EditText android:id="@+id/etTabooBase" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="饮食禁忌库基础数据" android:background="@drawable/bg_input_surface" android:padding="10dp"/>
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnSaveAiConfig" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="保存配置" app:backgroundTint="@color/accent"/>
+    </LinearLayout>
+</ScrollView>

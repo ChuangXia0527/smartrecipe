@@ -10,9 +10,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.smartrecipe.MainActivity;
 import com.example.smartrecipe.R;
+import com.example.smartrecipe.data.admin.AdminConfigManager;
 import com.example.smartrecipe.data.local.entity.UserAccount;
+import com.example.smartrecipe.data.session.AdminSessionManager;
 import com.example.smartrecipe.data.session.SessionManager;
 import com.example.smartrecipe.data.user.UserRepository;
+import com.example.smartrecipe.ui.admin.AdminActivity;
 
 public class AuthActivity extends AppCompatActivity {
 
@@ -29,11 +32,25 @@ public class AuthActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(v -> {
             String username = etUsername.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
-            UserAccount user = UserRepository.login(this, username, password);
-            if (user == null) {
-                Toast.makeText(this, "登录失败：用户名或密码错误", Toast.LENGTH_SHORT).show();
+
+            if (AdminConfigManager.login(this, username, password)) {
+                SessionManager.logout(this);
+                AdminSessionManager.login(this);
+                gotoAdmin();
                 return;
             }
+
+            if ("admin".equalsIgnoreCase(username)) {
+                Toast.makeText(this, "管理员账号或密码错误，请使用管理员最新凭证", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            UserAccount user = UserRepository.login(this, username, password);
+            if (user == null) {
+                Toast.makeText(this, "登录失败：用户名或密码错误，或账号被禁用", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            AdminSessionManager.logout(this);
             SessionManager.login(this, user.id);
             gotoMain();
         });
@@ -43,6 +60,10 @@ public class AuthActivity extends AppCompatActivity {
             String password = etPassword.getText().toString().trim();
             if (username.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "请输入用户名和密码", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if ("admin".equalsIgnoreCase(username)) {
+                Toast.makeText(this, "admin 为保留管理员账号，请更换用户名", Toast.LENGTH_SHORT).show();
                 return;
             }
             UserAccount user = UserRepository.register(this, username, password);
@@ -58,6 +79,12 @@ public class AuthActivity extends AppCompatActivity {
 
     private void gotoMain() {
         Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
+    private void gotoAdmin() {
+        Intent intent = new Intent(this, AdminActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }

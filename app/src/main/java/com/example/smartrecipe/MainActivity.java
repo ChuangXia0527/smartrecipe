@@ -22,15 +22,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smartrecipe.data.entity.Recipe;
 import com.example.smartrecipe.data.repository.RecipeRepository;
+import com.example.smartrecipe.data.session.AdminSessionManager;
 import com.example.smartrecipe.data.session.SessionManager;
 import com.example.smartrecipe.data.user.UserRepository;
 import com.example.smartrecipe.recommend.PersonalizedRecommendEngine;
+import com.example.smartrecipe.ui.admin.AdminActivity;
 import com.example.smartrecipe.ui.auth.AuthActivity;
 import com.example.smartrecipe.ui.detail.RecipeDetailActivity;
 import com.example.smartrecipe.ui.main.RecipeAdapter;
 import com.example.smartrecipe.ui.recognize.RecognizeActivity;
 import com.example.smartrecipe.ui.user.FavoritesActivity;
+import com.example.smartrecipe.ui.user.FeedbackActivity;
 import com.example.smartrecipe.ui.user.HistoryActivity;
+import com.example.smartrecipe.ui.user.IngredientManageActivity;
 import com.example.smartrecipe.ui.user.ProfileActivity;
 import com.example.smartrecipe.ui.user.UserPreferenceActivity;
 import com.example.smartrecipe.ui.voice.VoiceActivity;
@@ -91,6 +95,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (AdminSessionManager.isLoggedIn(this)) {
+            Intent adminIntent = new Intent(this, AdminActivity.class);
+            adminIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(adminIntent);
+            finish();
+            return;
+        }
+
         if (!SessionManager.isLoggedIn(this)) {
             Intent authIntent = new Intent(this, AuthActivity.class);
             if (authIntent.resolveActivity(getPackageManager()) != null) {
@@ -130,6 +142,8 @@ public class MainActivity extends AppCompatActivity {
         Button btnProfile = findViewById(R.id.btnProfile);
         Button btnFavorite = findViewById(R.id.btnFavorite);
         Button btnHistory = findViewById(R.id.btnHistory);
+        Button btnIngredientManage = findViewById(R.id.btnIngredientManage);
+        Button btnFeedback = findViewById(R.id.btnFeedback);
         Button btnLogout = findViewById(R.id.btnLogout);
 
         RecyclerView rv = findViewById(R.id.rvRecipes);
@@ -173,6 +187,8 @@ public class MainActivity extends AppCompatActivity {
         btnProfile.setOnClickListener(v -> startActivity(new Intent(this, ProfileActivity.class)));
         btnFavorite.setOnClickListener(v -> startActivity(new Intent(this, FavoritesActivity.class)));
         btnHistory.setOnClickListener(v -> startActivity(new Intent(this, HistoryActivity.class)));
+        btnIngredientManage.setOnClickListener(v -> startActivity(new Intent(this, IngredientManageActivity.class)));
+        btnFeedback.setOnClickListener(v -> startActivity(new Intent(this, FeedbackActivity.class)));
         btnLogout.setOnClickListener(v -> {
             SessionManager.logout(this);
             Intent it = new Intent(this, AuthActivity.class);
